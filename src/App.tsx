@@ -1,35 +1,52 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { createGlobalStyle } from 'styled-components';
 
-function App() {
-  const [count, setCount] = useState(0)
+const GlobalStyle = createGlobalStyle`
 
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+:root {
+--color-purple: #AD1FEA;
+--color-blue:#4661E6;
+--color-black:rgb(55, 63, 104);
+--color-white: #ffffff;
+--color-light-gray:#F2F4FF;
+--color-gray:#F7f8FD;
+--color-dark-blue:#3A4374;
+--color-dark-gray:#647196;
+--color-orange:#F49F85;
+--color-cyan:#62BCFA;
+
+--ff-primary: 'Jost', sans-serif;
+
+--fs-base: 1rem;
+--fs-sm: 0.875rem; 
+--fs-lg: 1.125rem;
+--fs-xl: 1.25rem;
+--fs-xxl: 1.5rem;
+
+--line-base: 1.5;
+--line-heading: 1.25;
+
 }
 
-export default App
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;}
+body {
+  font-family: var(--ff-primary);
+  font-size: var(--fs-base);
+  linhe-height: var(--line-base);
+}
+  img {
+    max-width: 100%;
+    height: auto;
+    display: block;}`;
+
+function App() {
+  return (
+    <>
+      <GlobalStyle />
+    </>
+  );
+}
+
+export default App;
