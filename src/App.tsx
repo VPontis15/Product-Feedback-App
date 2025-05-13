@@ -1,3 +1,4 @@
+import { createBrowserRouter, RouterProvider } from 'react-router';
 import { createGlobalStyle } from 'styled-components';
 
 const GlobalStyle = createGlobalStyle`
@@ -52,10 +53,18 @@ body {
     height: auto;
     display: block;}`;
 
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <h1>Welcome to the App</h1>,
+  },
+]);
+
 function App() {
   return (
     <>
       <GlobalStyle />
+      <RouterProvider router={router} />
     </>
   );
 }
