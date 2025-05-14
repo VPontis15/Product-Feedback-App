@@ -2,8 +2,10 @@ import styled from 'styled-components';
 import { css } from 'styled-components';
 
 const StyledButton = styled.button<{
-  $variant?: 'primary' | 'secondary' | 'tertiary' | 'error';
-  $size?: 'sm' | 'base' | 'lg' | 'xl';
+  $variant?: 'primary' | 'secondary' | 'tertiary' | 'error' | 'filter';
+  $size?: 'sm' | 'base' | 'lg' | 'xl' | 'filter';
+  $isActive?: boolean;
+  $isLoading?: boolean;
 }>`
   background: transparent;
   border-radius: var(--btn-radius);
@@ -13,6 +15,12 @@ const StyledButton = styled.button<{
   transition: all 0.2s ease;
 
   /* Size variations */
+  ${(props) =>
+    props.$size === 'filter' &&
+    css`
+      padding: 0.45rem 0.76rem;
+      font-size: 0.875rem;
+    `}
   ${(props) =>
     props.$size === 'sm' &&
     css`
@@ -81,20 +89,64 @@ const StyledButton = styled.button<{
         background: var(--color-red-hover);
       }
     `}
+
+    ${(props) =>
+    props.$variant === 'filter' &&
+    css`
+      background: var(--color-light-gray);
+      color: var(--color-blue);
+      text-transform: capitalize;
+      font-size: var(--fs-xxs);
+    `}
+
+    
+    ${(props) =>
+    props.$isActive &&
+    css`
+      background: var(--color-blue);
+      color: white;
+      &:hover {
+        background: var(--color-blue);
+      }
+    `}
+      
+    ${(props) =>
+    props.$isLoading &&
+    css`
+      background: var(--color-light-gray);
+      color: var(--color-dark-blue);
+      cursor: not-allowed;
+      &:hover {
+        background: var(--color-light-gray);
+      }
+    `}
 `;
+
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  children: React.ReactNode;
+  variant?: 'primary' | 'secondary' | 'tertiary' | 'error' | 'filter';
+  isActive?: boolean;
+  isLoading?: boolean;
+  size?: 'sm' | 'base' | 'lg' | 'xl' | 'filter';
+  props?: React.ButtonHTMLAttributes<HTMLButtonElement>;
+}
 
 export default function Button({
   children,
   variant = 'primary',
   size = 'base',
+  isActive = false,
+  isLoading = false,
   ...props
-}: {
-  children: React.ReactNode;
-  variant?: 'primary' | 'secondary' | 'tertiary' | 'error';
-  size?: 'sm' | 'base' | 'lg' | 'xl';
-} & React.ButtonHTMLAttributes<HTMLButtonElement>) {
+}: ButtonProps) {
   return (
-    <StyledButton $variant={variant} $size={size} {...props}>
+    <StyledButton
+      $isActive={isActive}
+      $variant={variant}
+      $size={size}
+      $isLoading={isLoading}
+      {...props}
+    >
       {children}
     </StyledButton>
   );
