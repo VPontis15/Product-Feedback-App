@@ -1,11 +1,12 @@
 import Layout from '../../components/Layout';
 import Aside from './Aside';
+import Suggestions from './Suggestions';
 
 export default function Home() {
   return (
     <Layout>
       <Aside />
-      <p>This is the home page of our application.</p>
+      <Suggestions />
     </Layout>
   );
 }
