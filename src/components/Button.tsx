@@ -31,7 +31,7 @@ const StyledButton = styled.button<{
   ${(props) =>
     props.$size === 'base' &&
     css`
-      padding: 0.78rem 2.68rem;
+      padding: 0.85rem 2.68rem;
       font-size: 1rem;
     `}
 
