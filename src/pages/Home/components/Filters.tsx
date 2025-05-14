@@ -11,6 +11,11 @@ const FiltersWrapper = styled.div`
   border-radius: var(--btn-radius);
   padding-block: 1.5rem;
   padding-inline-start: 1.5rem;
+  width: 100%;
+
+  @media (max-width: 768px) {
+    justify-content: center;
+  }
 `;
 
 export default function Filters() {
