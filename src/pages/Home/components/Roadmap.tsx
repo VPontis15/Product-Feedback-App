@@ -32,6 +32,11 @@ const StyledRoadmap = styled.div`
   }
 `;
 
+const RoadmapItemWrapper = styled.section`
+  display: grid;
+  gap: 0.5rem;
+`;
+
 export default function Roadmap() {
   return (
     <StyledRoadmap>
@@ -39,16 +44,17 @@ export default function Roadmap() {
         <h2>Roadmap</h2>
         <a href="">View</a>
       </div>
-
-      <RoadmapItem backgroundColor="#F49F85" quantity={2}>
-        Planned
-      </RoadmapItem>
-      <RoadmapItem backgroundColor="#AD1FEA" quantity={2}>
-        In Progress
-      </RoadmapItem>
-      <RoadmapItem backgroundColor="#62BCFA" quantity={2}>
-        Live
-      </RoadmapItem>
+      <RoadmapItemWrapper>
+        <RoadmapItem backgroundColor="#F49F85" quantity={2}>
+          Planned
+        </RoadmapItem>
+        <RoadmapItem backgroundColor="#AD1FEA" quantity={2}>
+          In Progress
+        </RoadmapItem>
+        <RoadmapItem backgroundColor="#62BCFA" quantity={2}>
+          Live
+        </RoadmapItem>
+      </RoadmapItemWrapper>
     </StyledRoadmap>
   );
 }

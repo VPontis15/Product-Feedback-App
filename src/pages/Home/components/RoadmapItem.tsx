@@ -20,6 +20,7 @@ const StyledRoadmapItem = styled.div`
   h3 {
     color: var(--color-dark-gray);
     text-transform: capitalize;
+    font-size: var(--fs-base);
     font-weight: 300;
   }
 
