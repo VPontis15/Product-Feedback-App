@@ -75,11 +75,12 @@ const StyledButton = styled.button<{
     ${(props) =>
     props.$variant === 'error' &&
     css`
-        background: var(--color-red);
-        color: white;
-        &:hover {
-          background: var(--color-red-hover);
-          `}
+      background: var(--color-red);
+      color: white;
+      &:hover {
+        background: var(--color-red-hover);
+      }
+    `}
 `;
 
 export default function Button({
