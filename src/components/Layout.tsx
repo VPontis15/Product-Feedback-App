@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-const RootLayout = styled.main`
+const RootLayout = styled.div`
   display: grid;
   grid-template-columns: 255px 1fr;
   gap: var(--grid-gap);
