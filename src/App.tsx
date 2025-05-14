@@ -1,5 +1,6 @@
 import { createBrowserRouter, RouterProvider } from 'react-router';
 import { createGlobalStyle } from 'styled-components';
+import Home from './pages/Home/Home';
 
 const GlobalStyle = createGlobalStyle`
 
@@ -16,16 +17,18 @@ const GlobalStyle = createGlobalStyle`
 --color-orange:#F49F85;
 --color-cyan:#62BCFA;
 
---color-purple-hover:#C75AF6
---color-blue-hover:#7C91F9
---color-black-hover:#656EA3;
+--color-purple-hover:#C75AF6;
+--color-blue-hover:#7C91F9;
+--color-dark-blue-hover:#656EA3;
 --color-white-hover:#F7F8FD;
 --color-red-hover:#E98888;
 
 --ff-primary: 'Jost', sans-serif;
 
+--fs-xxs: 0.8125rem;
+--fs-xs: 0.875rem; 
+--fs-sm: 0.9375rem; 
 --fs-base: 1rem;
---fs-sm: 0.875rem; 
 --fs-lg: 1.125rem;
 --fs-xl: 1.25rem;
 --fs-xxl: 1.5rem;
@@ -34,9 +37,11 @@ const GlobalStyle = createGlobalStyle`
 --line-heading: 1.25;
 
 
---btn-radius: 0.625rem;
+--btn-radius: 0.675rem;
 --btn-width: 9.875rem;
 --btn-height: 2.75rem;
+
+--grid-gap: 1.875rem;
 }
 
 * {
@@ -46,7 +51,8 @@ const GlobalStyle = createGlobalStyle`
 body {
   font-family: var(--ff-primary);
   font-size: var(--fs-base);
-  linhe-height: var(--line-base);
+  line-height: var(--line-base);
+  background-color: var(--color-white-hover);
 }
   img {
     max-width: 100%;
@@ -56,7 +62,7 @@ body {
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <h1>Welcome to the App</h1>,
+    element: <Home />,
   },
 ]);
 
