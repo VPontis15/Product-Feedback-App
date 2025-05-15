@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { css } from 'styled-components';
 
 const StyledButton = styled.button<{
-  $variant?: 'primary' | 'secondary' | 'tertiary' | 'error' | 'filter';
+  $variant?: 'primary' | 'secondary' | 'tertiary' | 'error' | 'filter' | 'text';
   $size?: 'sm' | 'base' | 'lg' | 'xl' | 'filter';
   $isActive?: boolean;
   $isLoading?: boolean;
@@ -118,6 +118,18 @@ const StyledButton = styled.button<{
     `}
 
     ${(props) =>
+    props.$variant === 'text' &&
+    css`
+      background: transparent;
+      color: var(--color-blue);
+      font-size: var(--fs-xs);
+      &:hover {
+        color: var(--color-blue-hover);
+      }
+    `}
+    
+
+    ${(props) =>
     props.$variant === 'error' &&
     css`
       background: var(--color-red);
@@ -126,6 +138,8 @@ const StyledButton = styled.button<{
         background: var(--color-red-hover);
       }
     `}
+
+
 
     ${(props) =>
     props.$variant === 'filter' &&
@@ -161,7 +175,7 @@ const StyledButton = styled.button<{
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
-  variant?: 'primary' | 'secondary' | 'tertiary' | 'error' | 'filter';
+  variant?: 'primary' | 'secondary' | 'tertiary' | 'error' | 'filter' | 'text';
   isActive?: boolean;
   isLoading?: boolean;
   size?: 'sm' | 'base' | 'lg' | 'xl' | 'filter';
