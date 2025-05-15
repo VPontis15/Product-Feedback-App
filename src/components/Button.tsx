@@ -20,12 +20,22 @@ const StyledButton = styled.button<{
     css`
       padding: 0.45rem 0.76rem;
       font-size: 0.875rem;
+
+      @media (max-width: 768px) {
+        padding: 0.4rem 0.65rem;
+        font-size: 0.8125rem;
+      }
     `}
   ${(props) =>
     props.$size === 'sm' &&
     css`
       padding: 0.5rem 1.75rem;
       font-size: 0.875rem;
+
+      @media (max-width: 768px) {
+        padding: 0.4rem 1.5rem;
+        font-size: 0.8125rem;
+      }
     `}
 
   ${(props) =>
@@ -33,6 +43,15 @@ const StyledButton = styled.button<{
     css`
       padding: 0.85rem 2.68rem;
       font-size: 1rem;
+
+      @media (max-width: 1024px) {
+        padding: 0.78125rem 1.5rem;
+      }
+
+      @media (max-width: 768px) {
+        padding: 0.7rem 1.25rem;
+        font-size: var(--fs-sm);
+      }
     `}
 
   ${(props) =>
@@ -40,6 +59,15 @@ const StyledButton = styled.button<{
     css`
       padding: 1rem 3.25rem;
       font-size: 1.125rem;
+
+      @media (max-width: 1024px) {
+        padding: 0.9rem 2.75rem;
+      }
+
+      @media (max-width: 768px) {
+        padding: 0.8rem 2.25rem;
+        font-size: var(--fs-base);
+      }
     `}
 
   ${(props) =>
@@ -47,6 +75,15 @@ const StyledButton = styled.button<{
     css`
       padding: 1.2rem 3.75rem;
       font-size: 1.25rem;
+
+      @media (max-width: 1024px) {
+        padding: 1.1rem 3.25rem;
+      }
+
+      @media (max-width: 768px) {
+        padding: 1rem 2.75rem;
+        font-size: var(--fs-lg);
+      }
     `}
 
   /* Variant variations */
