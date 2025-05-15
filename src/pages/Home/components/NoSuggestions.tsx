@@ -19,6 +19,10 @@ const EmptySuggestionContent = styled.div`
   border-radius: var(--btn-radius);
   flex: 1;
 
+  @media (max-width: 768px) {
+    padding-block: 7rem;
+  }
+
   h2 {
     color: var(--color-dark-blue);
     font-size: var(--fs-xxl);
@@ -36,7 +40,12 @@ const EmptySuggestionContent = styled.div`
 export default function NoSuggestions() {
   return (
     <EmptySuggestionContent>
-      <IlluStration src={emptySuggestions} alt="No suggestions" />
+      <IlluStration
+        width={136}
+        height={144}
+        src={emptySuggestions}
+        alt="No suggestions"
+      />
       <h2>There is no feedback yet.</h2>
       <p>
         Got a suggestion? Found a bug that needs to be squashed? We love hearing

@@ -49,9 +49,14 @@ export default function Header() {
   return (
     <StyledHeader>
       <picture>
-        <source srcSet={backgroundHeaderMobile} media="(max-width: 767px)" />
+        <source srcSet={backgroundHeaderMobile} media="(max-width: 500px)" />
         <source srcSet={backgroundHeaderTablet} media="(max-width: 1023px)" />
-        <StyledImage src={backgroundHeader} alt="Header background" />
+        <StyledImage
+          width={255}
+          height={135}
+          src={backgroundHeader}
+          alt="Header background"
+        />
       </picture>
       <StyledText>
         <h1>Frontend Mentor</h1>
