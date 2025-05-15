@@ -1,5 +1,7 @@
 import styled from 'styled-components';
 import RoadmapItem from './RoadmapItem';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import supabase from '../../../api/supabase';
 
 const StyledRoadmap = styled.div`
   display: grid;
@@ -38,6 +40,29 @@ const RoadmapItemWrapper = styled.section`
 `;
 
 export default function Roadmap() {
+  const queryClient = useQueryClient();
+
+  const {
+    data: roadmapData,
+    error,
+    isLoading,
+  } = useQuery({
+    queryKey: ['statuses'],
+    queryFn: async () => {
+      try {
+        const { data: status, error } = await supabase
+          .from('status')
+          .select('*');
+        if (error) {
+          throw new Error(error.message);
+        }
+        return status;
+      } catch (error) {
+        console.error('Error fetching statuses:', error);
+      }
+    },
+  });
+
   return (
     <StyledRoadmap>
       <div>
@@ -45,15 +70,31 @@ export default function Roadmap() {
         <a href="">View</a>
       </div>
       <RoadmapItemWrapper>
-        <RoadmapItem backgroundColor="#F49F85" quantity={2}>
-          Planned
-        </RoadmapItem>
-        <RoadmapItem backgroundColor="#AD1FEA" quantity={2}>
-          In Progress
-        </RoadmapItem>
-        <RoadmapItem backgroundColor="#62BCFA" quantity={2}>
-          Live
-        </RoadmapItem>
+        {isLoading
+          ? // Render skeleton placeholders when loading
+            Array(3)
+              .fill(0)
+              .map((_, index) => (
+                <RoadmapItem
+                  key={`skeleton-${index}`}
+                  isLoading={true}
+                  backgroundcolor=""
+                  quantity={0}
+                >
+                  Loading
+                </RoadmapItem>
+              ))
+          : roadmapData &&
+            roadmapData.map((roadmapItemData) => (
+              <RoadmapItem
+                isLoading={false}
+                key={roadmapItemData.id}
+                backgroundcolor={roadmapItemData.color}
+                quantity={roadmapItemData.quantity}
+              >
+                {roadmapItemData.update_status}
+              </RoadmapItem>
+            ))}
       </RoadmapItemWrapper>
     </StyledRoadmap>
   );

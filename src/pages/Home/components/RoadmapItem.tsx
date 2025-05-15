@@ -1,9 +1,11 @@
 import styled from 'styled-components';
+import Skeleton from '../../../components/Skeleton';
 
 interface RoadmapItemProps {
-  backgroundColor: string;
+  backgroundcolor: string;
   children: React.ReactNode;
   quantity: number;
+  isLoading: boolean;
 }
 
 const StyledRoadmapItem = styled.div`
@@ -31,23 +33,51 @@ const StyledRoadmapItem = styled.div`
   }
 `;
 
-const RoadmapItemCircle = styled.div<{ backgroundColor: string }>`
+const RoadmapItemCircle = styled.div<{ backgroundcolor: string }>`
   width: 0.5rem;
-    height: 0.5rem;
-    background-color: ${(props) => props.backgroundColor};
-    border-radius: 50%;
-    }
-    `;
+  height: 0.5rem;
+  background-color: ${(props) => props.backgroundcolor};
+  border-radius: 50%;
+`;
+
+const SkeletonCircle = styled(Skeleton)`
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+`;
+
+const SkeletonText = styled(Skeleton)`
+  width: 5rem;
+  height: 1rem;
+`;
+
+const SkeletonQuantity = styled(Skeleton)`
+  width: 1rem;
+  height: 1rem;
+  border-radius: 0.375rem; /* rounded-md */
+`;
 
 export default function RoadmapItem({
-  backgroundColor,
+  backgroundcolor,
   children,
   quantity,
+  isLoading,
 }: RoadmapItemProps) {
+  if (isLoading) {
+    return (
+      <StyledRoadmapItem>
+        <div>
+          <SkeletonCircle />
+          <SkeletonText />
+        </div>
+        <SkeletonQuantity />
+      </StyledRoadmapItem>
+    );
+  }
   return (
     <StyledRoadmapItem>
       <div>
-        <RoadmapItemCircle backgroundColor={backgroundColor} />
+        <RoadmapItemCircle backgroundcolor={backgroundcolor} />
         <h3>{children}</h3>
       </div>
       <span>{quantity}</span>
