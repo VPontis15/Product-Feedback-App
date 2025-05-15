@@ -7,6 +7,10 @@ const StyledAside = styled.aside`
   display: grid;
   gap: 1.5rem;
   align-self: start;
+
+  @media (max-width: 986px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
 `;
 
 export default function Aside() {
