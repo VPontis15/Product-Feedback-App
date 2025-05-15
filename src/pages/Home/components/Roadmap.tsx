@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import RoadmapItem from './RoadmapItem';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import supabase from '../../../api/supabase';
+import ErrorMessage from '../../../components/ErrorMessage';
 
 const StyledRoadmap = styled.div`
   display: grid;
@@ -63,6 +64,10 @@ export default function Roadmap() {
     },
   });
 
+  if (error) {
+    return <ErrorMessage message={error.message || 'Something went wrong'} />;
+  }
+
   return (
     <StyledRoadmap>
       <div>
@@ -85,16 +90,18 @@ export default function Roadmap() {
                 </RoadmapItem>
               ))
           : roadmapData &&
-            roadmapData.map((roadmapItemData) => (
-              <RoadmapItem
-                isLoading={false}
-                key={roadmapItemData.id}
-                backgroundcolor={roadmapItemData.color}
-                quantity={roadmapItemData.quantity}
-              >
-                {roadmapItemData.update_status}
-              </RoadmapItem>
-            ))}
+            roadmapData
+              .filter((item) => item.update_status !== 'Suggestion')
+              .map((roadmapItemData) => (
+                <RoadmapItem
+                  isLoading={false}
+                  key={roadmapItemData.id}
+                  backgroundcolor={roadmapItemData.color}
+                  quantity={roadmapItemData.quantity}
+                >
+                  {roadmapItemData.update_status}
+                </RoadmapItem>
+              ))}
       </RoadmapItemWrapper>
     </StyledRoadmap>
   );
