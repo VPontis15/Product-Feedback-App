@@ -1,6 +1,7 @@
 import { createBrowserRouter, RouterProvider } from 'react-router';
 import { createGlobalStyle } from 'styled-components';
 import Home from './pages/Home/Home';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 const GlobalStyle = createGlobalStyle`
 
@@ -16,12 +17,13 @@ const GlobalStyle = createGlobalStyle`
 --color-dark-gray:#647196;
 --color-orange:#F49F85;
 --color-cyan:#62BCFA;
-
+--color-like: #F2F4FE;
 --color-purple-hover:#C75AF6;
 --color-blue-hover:#7C91F9;
 --color-dark-blue-hover:#656EA3;
 --color-white-hover:#F7F8FD;
 --color-red-hover:#E98888;
+--color-comment: #8594F8
 
 --ff-primary: 'Jost', sans-serif;
 
@@ -34,6 +36,7 @@ const GlobalStyle = createGlobalStyle`
 --fs-xxl: 1.5rem;
 
 --line-base: 1.5;
+--line-lg: 1.75;
 --line-heading: 1.25;
 
 
@@ -66,11 +69,15 @@ const router = createBrowserRouter([
   },
 ]);
 
+const queryClient = new QueryClient();
+
 function App() {
   return (
     <>
       <GlobalStyle />
-      <RouterProvider router={router} />
+      <QueryClientProvider client={queryClient}>
+        <RouterProvider router={router} />
+      </QueryClientProvider>
     </>
   );
 }
