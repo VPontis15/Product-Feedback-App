@@ -9,7 +9,7 @@ const RootLayout = styled.div`
   min-height: 100svh;
   padding-block: 5.9375rem;
 
-  @media (max-width: 768px) {
+  @media (max-width: 986px) {
     grid-template-columns: 1fr;
     padding-block: 3.875rem;
   }
