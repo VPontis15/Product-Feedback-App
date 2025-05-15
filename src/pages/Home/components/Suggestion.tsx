@@ -61,6 +61,12 @@ const CommentsWrapper = styled.div`
     align-self: center;
     cursor: pointer;
   }
+
+  span {
+    color: var(--color-dark-blue);
+    font-weight: 700;
+    font-size: var(--fs-base);
+  }
 `;
 
 const SuggestionDetailsWrapper = styled.div`
@@ -108,7 +114,7 @@ export default function Suggestion({ suggestion }: SuggestionProps) {
           </div>
           <CommentsWrapper>
             <img src={commentsSvg} alt="" />
-            <span>{comments} comments</span>
+            <span>{comments}</span>
           </CommentsWrapper>
         </SuggestionDetailsWrapper>
         <Button variant="filter" size="sm">
