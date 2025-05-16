@@ -41,8 +41,6 @@ const RoadmapItemWrapper = styled.section`
 `;
 
 export default function Roadmap() {
-  const queryClient = useQueryClient();
-
   const {
     data: roadmapData,
     error,
