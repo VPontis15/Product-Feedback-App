@@ -2,15 +2,24 @@ import styled from 'styled-components';
 import arrowUp from '../../../assets/shared/icon-arrow-up.svg';
 import commentsSvg from '../../../assets/shared/icon-comments.svg';
 import Button from '../../../components/Button';
+import { Link } from 'react-router';
 
+// Update the interface to match the Supabase response structure
 interface SuggestionProps {
   suggestion: {
     id: string;
     title: string;
-    description: string;
-    category: string;
-    likes: number;
-    comments: number;
+    feedback_detail: string;
+    category: {
+      category: string;
+    };
+    status: {
+      update_status: string;
+    };
+    upvotes: number;
+    comment: {
+      count: number;
+    }[];
   };
 }
 
@@ -75,10 +84,11 @@ const SuggestionDetailsWrapper = styled.div`
   gap: 1rem;
   justify-content: space-between;
 
-  h3 {
+  a {
     color: var(--color-dark-blue);
     font-size: var(--fs-lg);
     font-weight: 700;
+    text-decoration: none;
   }
 
   p {
@@ -99,26 +109,34 @@ const SuggestionContent = styled.div`
 `;
 
 export default function Suggestion({ suggestion }: SuggestionProps) {
-  const { id, title, description, category, likes, comments } = suggestion;
+  const {
+    title,
+    slug,
+    feedback_detail: description,
+    category,
+    upvotes,
+  } = suggestion;
+  const commentsCount = suggestion.comment[0]?.count | 0;
+
   return (
     <SuggestionWrapper>
       <Likes>
         <img src={arrowUp} alt="" />
-        <span>{likes}</span>
+        <span>{upvotes}</span>
       </Likes>
       <SuggestionContent>
         <SuggestionDetailsWrapper>
           <div>
-            <h3>{title}</h3>
+            <Link to={`/suggestion/${slug}`}>{title}</Link>
             <p>{description}</p>
           </div>
           <CommentsWrapper>
             <img src={commentsSvg} alt="" />
-            <span>{comments}</span>
+            <span>{commentsCount || 0}</span>
           </CommentsWrapper>
         </SuggestionDetailsWrapper>
         <Button variant="filter" size="sm">
-          {category}
+          {category?.category || 'No Category'}
         </Button>
       </SuggestionContent>
     </SuggestionWrapper>
