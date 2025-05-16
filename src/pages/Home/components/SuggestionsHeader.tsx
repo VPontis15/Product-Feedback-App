@@ -47,13 +47,13 @@ const StyledSuggestionsHeader = styled.header`
     font-weight: 700;
   }
 `;
-export default function SuggestionsHeader() {
+export default function SuggestionsHeader({ count }: { count: number }) {
   return (
     <StyledSuggestionsHeader>
       <div>
         <div>
           <img src={suggestionsIcon} alt="" />
-          <span>6</span>
+          <span>{count}</span>
           <h2>Suggestions</h2>
         </div>
 
