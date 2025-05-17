@@ -2,6 +2,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router';
 import { createGlobalStyle } from 'styled-components';
 import Home from './pages/Home/Home';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import SuggestionPage from './pages/Suggestion/SuggestionPage';
 
 const GlobalStyle = createGlobalStyle`
 
@@ -23,7 +24,8 @@ const GlobalStyle = createGlobalStyle`
 --color-dark-blue-hover:#656EA3;
 --color-white-hover:#F7F8FD;
 --color-red-hover:#E98888;
---color-comment: #8594F8
+--color-comment: #8594F8;
+--color-comment-divider:rgba(140, 146, 179, 0.13);
 
 --ff-primary: 'Jost', sans-serif;
 
@@ -55,7 +57,7 @@ body {
   font-family: var(--ff-primary);
   font-size: var(--fs-base);
   line-height: var(--line-base);
-  background-color: var(--color-white-hover);
+  background-color: var(--color-light-gray);
 }
   img {
     max-width: 100%;
@@ -66,6 +68,10 @@ const router = createBrowserRouter([
   {
     path: '/',
     element: <Home />,
+  },
+  {
+    path: 'suggestion/:slug',
+    element: <SuggestionPage />,
   },
 ]);
 
