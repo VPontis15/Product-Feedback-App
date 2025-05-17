@@ -54,7 +54,7 @@ export default function SuggestionsHeader({ count }: { count: number }) {
         <div>
           <img src={suggestionsIcon} alt="" />
           <span>{count}</span>
-          <h2>Suggestions</h2>
+          <h2>Suggestion</h2>
         </div>
 
         <form action="">
