@@ -41,15 +41,14 @@ const LoadingWrapper = styled.div`
   .loader {
     width: 60px;
     height: 50px;
-    --m: no-repeat
-      linear-gradient(90deg, var(--color-purple) 70%, transparent 0);
+    --m: no-repeat linear-gradient(90deg, var(--color-cyan) 70%, transparent 0);
     -webkit-mask: var(--m) calc(0 * 100% / 4) 100% / calc(100% / 5)
         calc(1 * 100% / 5),
       var(--m) calc(1 * 100% / 4) 100% / calc(100% / 5) calc(2 * 100% / 5),
       var(--m) calc(2 * 100% / 4) 100% / calc(100% / 5) calc(3 * 100% / 5),
       var(--m) calc(3 * 100% / 4) 100% / calc(100% / 5) calc(4 * 100% / 5),
       var(--m) calc(4 * 100% / 4) 100% / calc(100% / 5) calc(5 * 100% / 5);
-    background: linear-gradient(var(--color-purple) 0 0) left/0% 100% no-repeat
+    background: linear-gradient(var(--color-cyan) 0 0) left/0% 100% no-repeat
       #ddd;
     animation: l14 2s infinite steps(6);
   }
