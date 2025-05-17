@@ -7,7 +7,7 @@ interface SkeletonProps extends React.HTMLAttributes<HTMLDivElement> {
 const SkeletonDiv = styled.div<{ width?: string }>`
   animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   border-radius: 0.375rem; /* rounded-md */
-  background-color: var(--color-dark-blue);
+  background-color: var(--color-skeleton);
   width: ${(props) => props.width || 'auto'};
 
   @keyframes pulse {
