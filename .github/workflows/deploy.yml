@@ -28,7 +28,7 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: build # branch to push to
-          folder: build # folder to push
+          folder: dist # folder to push
 
       - name: Trigger Hostinger Auto-Deploy
         run: curl -X POST https://webhooks.hostinger.com/deploy/88000a4fc96d75c950deab336fd1a35b
