@@ -70,7 +70,8 @@ export default function CommentSection({
       ) : (
         <>
           <h2>
-            <span>{comments?.length || 0}</span> Comments
+            <span>{comments?.length || 0}</span>{' '}
+            {comments?.length == 1 ? 'Comment' : 'Comments'}
           </h2>
           {comments
             ?.filter((comment) => comment.parent_comment_id === null)

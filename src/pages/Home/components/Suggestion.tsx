@@ -114,24 +114,23 @@ const SuggestionContent = styled.div`
 const SkeletonTextHeading = styled(Skeleton)`
   height: 1.6rem;
   width: 10rem;
-  background-color: var(--color-dark-blue);
+
   margin-bottom: 0.5rem;
 `;
 const SkeletonTextDesc = styled(Skeleton)`
   height: 1rem;
   width: 20rem;
-  background-color: var(--color-dark-blue);
+
   margin-bottom: 0.5rem;
 `;
-const SkeletonTextCat = styled(Skeleton)`
-  height: 1rem;
-  width: 10rem;
-  background-color: var(--color-dark-blue);
+const SkeletonTextReply = styled(Skeleton)`
+  height: 1.5rem;
+  width: 1.5rem;
 `;
 
-const SkeletonButton = styled(Skeleton)`
+const SkeletonCat = styled(Skeleton)`
   height: 2rem;
-  width: 7rem;
+  width: 5rem;
   border-radius: var(--btn-radius);
 `;
 
@@ -144,10 +143,10 @@ const SkeletonLikes = styled(Skeleton)`
   justify-content: center;
   border: none;
   border-radius: var(--btn-radius);
-  background-color: var(--color-dark-blue);
   padding-inline: 0.5.5rem;
   padding-block: 0.875rem 0.5rem;
   cursor: pointer;
+  height: 3rem;
 `;
 
 export default function Suggestion({ suggestion, isLoading }: SuggestionProps) {
@@ -162,9 +161,9 @@ export default function Suggestion({ suggestion, isLoading }: SuggestionProps) {
               <SkeletonTextHeading />
               <SkeletonTextDesc />
             </div>
-            <SkeletonTextCat />
+            <SkeletonTextReply />
           </SuggestionDetailsWrapper>
-          <SkeletonButton />
+          <SkeletonCat />
         </SuggestionContent>
       </SuggestionWrapper>
     );
