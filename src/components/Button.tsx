@@ -22,30 +22,30 @@ const StyledButton = styled.button<{
       font-size: 0.875rem;
 
       @media (max-width: 768px) {
-        padding: 0.4rem 0.65rem;
-        font-size: 0.8125rem;
+        padding: 0.36rem 0.61rem; /* 80% of original padding */
+        font-size: 0.7rem; /* 80% of original font size */
       }
     `}
   ${(props) =>
     props.$size === 'sm' &&
     css`
-      padding: 0.5rem 1.75rem;
+      padding: 0.85rem 1rem;
       font-size: 0.875rem;
 
       @media (max-width: 768px) {
-        padding: 0.4rem 1.5rem;
-        font-size: 0.8125rem;
+        padding: 0.68rem 0.8rem; /* 80% of original padding */
+        font-size: 0.7rem; /* 80% of original font size */
       }
     `}
 
   ${(props) =>
     props.$size === 'base' &&
     css`
-      padding: 0.85rem 2.68rem;
-      font-size: 1rem;
+      padding: 0.85rem 1.55rem;
+      font-size: var(--fs-sm);
 
       @media (max-width: 1024px) {
-        padding: 0.78125rem 1.5rem;
+        padding: 0.72rem 1.32rem; /* 85% of original padding */
       }
 
       @media (max-width: 768px) {
