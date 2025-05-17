@@ -3,13 +3,16 @@ import arrowUp from '../../../assets/shared/icon-arrow-up.svg';
 import commentsSvg from '../../../assets/shared/icon-comments.svg';
 import Button from '../../../components/Button';
 import { Link } from 'react-router';
+import Skeleton from '../../../components/Skeleton';
 
 // Update the interface to match the Supabase response structure
 interface SuggestionProps {
+  isLoading?: boolean;
   suggestion: {
     id: string;
     title: string;
-    feedback_detail: string;
+    slug: string;
+    description: string;
     category: {
       category: string;
     };
@@ -108,15 +111,67 @@ const SuggestionContent = styled.div`
   }
 `;
 
-export default function Suggestion({ suggestion }: SuggestionProps) {
-  const {
-    title,
-    slug,
-    feedback_detail: description,
-    category,
-    upvotes,
-  } = suggestion;
-  const commentsCount = suggestion.comment[0]?.count | 0;
+const SkeletonTextHeading = styled(Skeleton)`
+  height: 1.6rem;
+  width: 10rem;
+  background-color: var(--color-dark-blue);
+  margin-bottom: 0.5rem;
+`;
+const SkeletonTextDesc = styled(Skeleton)`
+  height: 1rem;
+  width: 20rem;
+  background-color: var(--color-dark-blue);
+  margin-bottom: 0.5rem;
+`;
+const SkeletonTextCat = styled(Skeleton)`
+  height: 1rem;
+  width: 10rem;
+  background-color: var(--color-dark-blue);
+`;
+
+const SkeletonButton = styled(Skeleton)`
+  height: 2rem;
+  width: 7rem;
+  border-radius: var(--btn-radius);
+`;
+
+const SkeletonLikes = styled(Skeleton)`
+  display: inline-flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-self: start;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: var(--btn-radius);
+  background-color: var(--color-dark-blue);
+  padding-inline: 0.5.5rem;
+  padding-block: 0.875rem 0.5rem;
+  cursor: pointer;
+`;
+
+export default function Suggestion({ suggestion, isLoading }: SuggestionProps) {
+  if (isLoading) {
+    return (
+      <SuggestionWrapper>
+        <SkeletonLikes />
+
+        <SuggestionContent>
+          <SuggestionDetailsWrapper>
+            <div>
+              <SkeletonTextHeading />
+              <SkeletonTextDesc />
+            </div>
+            <SkeletonTextCat />
+          </SuggestionDetailsWrapper>
+          <SkeletonButton />
+        </SuggestionContent>
+      </SuggestionWrapper>
+    );
+  }
+
+  const { title, slug, description, category, upvotes } = suggestion;
+  const commentsCount = suggestion.comment[0]?.count || 0;
 
   return (
     <SuggestionWrapper>
@@ -132,7 +187,7 @@ export default function Suggestion({ suggestion }: SuggestionProps) {
           </div>
           <CommentsWrapper>
             <img src={commentsSvg} alt="" />
-            <span>{commentsCount || 0}</span>
+            <span>{commentsCount}</span>
           </CommentsWrapper>
         </SuggestionDetailsWrapper>
         <Button variant="filter" size="sm">
