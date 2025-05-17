@@ -182,7 +182,7 @@ export default function Suggestion({ suggestion, isLoading }: SuggestionProps) {
       <SuggestionContent>
         <SuggestionDetailsWrapper>
           <div>
-            <Link to={`/suggestion/${slug}`}>{title}</Link>
+            <Link to={`/feedback/${slug}`}>{title}</Link>
             <p>{description}</p>
           </div>
           <CommentsWrapper>

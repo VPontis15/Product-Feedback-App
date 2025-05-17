@@ -70,7 +70,7 @@ const router = createBrowserRouter([
     element: <Home />,
   },
   {
-    path: 'suggestion/:slug',
+    path: 'feedback/:slug',
     element: <SuggestionPage />,
   },
 ]);
