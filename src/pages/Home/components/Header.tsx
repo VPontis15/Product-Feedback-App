@@ -54,6 +54,7 @@ export default function Header() {
         <StyledImage
           width={255}
           height={135}
+          fetchPriority="high"
           src={backgroundHeader}
           alt="Header background"
         />
