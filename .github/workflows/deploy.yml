@@ -31,4 +31,4 @@ jobs:
           folder: dist # folder to push
 
       - name: Trigger Hostinger Auto-Deploy
-        run: curl -X POST https://webhooks.hostinger.com/deploy/88000a4fc96d75c950deab336fd1a35b
+        run: curl -X POST https://webhooks.hostinger.com/deploy/a6acd4c0e5ae9d80dbe3a1083b761f62
