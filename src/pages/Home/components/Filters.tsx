@@ -17,7 +17,8 @@ const FiltersWrapper = styled.div`
   padding-inline-start: 1.5rem;
   width: 100%;
 
-  @media (max-width: 768px) {
+  @media (max-width: 650px) {
+    display: none;
   }
 `;
 
