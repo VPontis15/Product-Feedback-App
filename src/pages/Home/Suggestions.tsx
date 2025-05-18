@@ -5,6 +5,7 @@ import Suggestion from './components/Suggestion';
 import { useQuery } from '@tanstack/react-query';
 import supabase from '../../api/supabase';
 import ErrorMessage from '../../components/ErrorMessage';
+import Loader from '../../components/Loader';
 
 const Main = styled.main`
   display: flex;
@@ -126,9 +127,7 @@ export default function Suggestions() {
     <Main>
       <SuggestionsHeader count={count} />
       {isLoading ? (
-        <LoadingWrapper>
-          <div className="loader"></div>
-        </LoadingWrapper>
+        <Loader fullscreen />
       ) : error ? (
         <ErrorWrapper>
           <ErrorMessage>

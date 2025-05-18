@@ -4,11 +4,8 @@ const LoadingWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100svh
-
-  top: 0;
+  height: calc(100svh - 220px);
   width: 100%;
-  font-size: var(--fs-lg);
   color: var(--color-dark-blue);
   background-color: var(--color-white);
   border-radius: var(--btn-radius);
