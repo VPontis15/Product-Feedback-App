@@ -51,7 +51,11 @@ export default function FiltersMobile() {
     },
   });
   if (error) {
-    return <ErrorMessage message={error.message || 'Something went wrong'} />;
+    return (
+      <ErrorMessage>
+        message={error.message || 'Something went wrong'}
+      </ErrorMessage>
+    );
   }
 
   return (
