@@ -130,11 +130,11 @@ export default function Suggestions() {
         </LoadingWrapper>
       ) : error ? (
         <ErrorWrapper>
-          <ErrorMessage
-            message={
-              error instanceof Error ? error.message : 'An error occurred'
-            }
-          />
+          <ErrorMessage>
+            {error instanceof Error
+              ? error.message
+              : 'An error occurred while fetching suggestions'}
+          </ErrorMessage>
         </ErrorWrapper>
       ) : suggestions?.length ? (
         <SuggestionsWrapper>
