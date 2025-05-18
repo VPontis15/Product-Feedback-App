@@ -67,7 +67,11 @@ export default function Roadmap() {
   });
 
   if (error) {
-    return <ErrorMessage message={error.message || 'Something went wrong'} />;
+    return (
+      <ErrorMessage>
+        {error instanceof Error ? error.message : 'Something went wrong'}
+      </ErrorMessage>
+    );
   }
 
   return (
