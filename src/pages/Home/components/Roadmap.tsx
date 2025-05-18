@@ -33,6 +33,10 @@ const StyledRoadmap = styled.div`
     font-size: var(--fs-lg);
     color: var(--color-dark-blue);
   }
+
+  @media (max-width: 650px) {
+    display: none;
+  }
 `;
 
 const RoadmapItemWrapper = styled.section`
