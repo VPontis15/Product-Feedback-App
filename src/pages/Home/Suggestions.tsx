@@ -136,7 +136,7 @@ export default function Suggestions() {
             }
           />
         </ErrorWrapper>
-      ) : !suggestions?.length ? (
+      ) : suggestions?.length ? (
         <SuggestionsWrapper>
           {suggestions.map((suggestion) => (
             <Suggestion key={suggestion.id} suggestion={suggestion} />
