@@ -13,10 +13,21 @@ const StyledSuggestionsHeader = styled.header`
   padding-inline: 1.5rem 1rem;
   width: 100%;
 
+  @media (max-width: 650px) {
+    padding-block: 0.5rem;
+    border-radius: 0;
+  }
+
   div {
     display: flex;
     align-items: center;
     gap: 0.25rem;
+  }
+
+  div > div {
+    @media (max-width: 650px) {
+      display: none;
+    }
   }
 
   img {
@@ -26,6 +37,10 @@ const StyledSuggestionsHeader = styled.header`
   }
   div + form {
     margin-inline: 2.125rem;
+
+    @media (max-width: 650px) {
+      margin-inline: 0;
+    }
   }
 
   h2,
@@ -40,11 +55,16 @@ const StyledSuggestionsHeader = styled.header`
     gap: 0.5rem;
     align-items: center;
   }
+
+  label {
+    font-size: var(--fs-xs);
+  }
   select {
     background: none;
     color: var(--color-white);
     border: none;
     font-weight: 700;
+    font-size: var(--fs-xs);
   }
 `;
 export default function SuggestionsHeader({ count }: { count: number }) {

@@ -33,8 +33,13 @@ const SuggestionWrapper = styled.article`
   padding-block: 1.5rem;
   padding-inline: 1.5rem;
   display: grid;
-  grid-template-columns: 2.5rem 1fr;
+  grid-template-columns: 2.5rem 1fr 2.5rem;
   gap: 2.5rem;
+
+  @media (max-width: 550px) {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
 `;
 
 const Likes = styled.button`
@@ -47,7 +52,7 @@ const Likes = styled.button`
   border: none;
   border-radius: var(--btn-radius);
   background-color: var(--color-like);
-  padding-inline: 0.5.5rem;
+  padding-inline: .5rem;
   padding-block: 0.875rem 0.5rem;
   cursor: pointer;
 
@@ -57,13 +62,24 @@ const Likes = styled.button`
     letter-spacing: -0.18px;
     font-weight: 700;
   }
+
+  @media (max-width: 550px) {
+  grid-row:2;
+  flex-direction: row;
+  justify-self: start;
+  width:4.3125rem;
+  vertical-align: middle;
+  padding-block: .469rem;
+  margin-top:1rem;
 `;
 
 const CommentsWrapper = styled.div`
   display: flex;
   items: center;
   gap: 0.5rem;
-
+  align-self: center;
+  justify-self: center;
+  padding-block-end: 1rem;
   img {
     color: #8594f8;
     background-color: var(--color-white);
@@ -79,6 +95,11 @@ const CommentsWrapper = styled.div`
     font-weight: 700;
     font-size: var(--fs-base);
   }
+
+  @media (max-width: 550px) {
+  grid-row:2;
+    margin-top:1rem;
+
 `;
 
 const SuggestionDetailsWrapper = styled.div`
@@ -98,6 +119,8 @@ const SuggestionDetailsWrapper = styled.div`
     color: var(--color-dark-gray);
     font-weight: 400;
     line-height: 1.5rem;
+    display: block;
+    width: 100%;
   }
 `;
 
@@ -105,9 +128,11 @@ const SuggestionContent = styled.div`
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+  width: 100%;
 
   button {
     align-self: flex-start;
+    padding-inline: 1.125rem;
   }
 `;
 
@@ -184,15 +209,15 @@ export default function Suggestion({ suggestion, isLoading }: SuggestionProps) {
             <Link to={`/feedback/${slug}`}>{title}</Link>
             <p>{description}</p>
           </div>
-          <CommentsWrapper>
-            <img src={commentsSvg} alt="" />
-            <span>{commentsCount}</span>
-          </CommentsWrapper>
         </SuggestionDetailsWrapper>
         <Button variant="filter" size="sm">
           {category?.category || 'No Category'}
         </Button>
       </SuggestionContent>
+      <CommentsWrapper>
+        <img src={commentsSvg} alt="" />
+        <span>{commentsCount}</span>
+      </CommentsWrapper>
     </SuggestionWrapper>
   );
 }
