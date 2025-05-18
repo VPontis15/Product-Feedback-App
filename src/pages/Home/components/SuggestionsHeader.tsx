@@ -16,6 +16,9 @@ const StyledSuggestionsHeader = styled.header`
   @media (max-width: 650px) {
     padding-block: 0.5rem;
     border-radius: 0;
+    margin-block-end: 2rem;
+    position: sticky;
+    max-width: 100%;
   }
 
   div {
