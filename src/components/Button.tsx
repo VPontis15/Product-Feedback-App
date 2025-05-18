@@ -49,8 +49,11 @@ const StyledButton = styled.button<{
       }
 
       @media (max-width: 768px) {
-        padding: 0.7rem 1.25rem;
+        padding: 0.85rem 1rem;
         font-size: var(--fs-sm);
+      }
+      @media (max-width: 650px) {
+        font-size: var(--fs-xs);
       }
     `}
 
