@@ -21,8 +21,6 @@ const Main = styled.main`
   }
 `;
 const SuggestionsWrapper = styled.div`
-  max-width: min(1440px, 95%);
-  margin-inline: auto;
   max-height: calc(100svh - 10rem);
   overflow-y: auto;
   display: flex;
@@ -31,6 +29,11 @@ const SuggestionsWrapper = styled.div`
   flex-direction: column;
   overscroll-behavior-y: unset;
   gap: 1.5rem;
+
+  @media (max-width: 650px) {
+    max-width: min(1440px, 95%);
+    margin-inline: auto;
+  }
 `;
 
 const LoadingWrapper = styled.div`
@@ -133,7 +136,7 @@ export default function Suggestions() {
             }
           />
         </ErrorWrapper>
-      ) : suggestions?.length ? (
+      ) : !suggestions?.length ? (
         <SuggestionsWrapper>
           {suggestions.map((suggestion) => (
             <Suggestion key={suggestion.id} suggestion={suggestion} />

@@ -13,15 +13,19 @@ const EmptySuggestionContent = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  max-width: min(1440px, 95%);
-  margin-inline: auto;
   gap: 1rem;
   color: var(--color-dark-gray);
   background-color: var(--color-white);
   border-radius: var(--btn-radius);
   flex: 1;
 
-  @media (max-width: 768px) {
+  @media (max-width: 650px) {
+    width: min(1440px, 90%);
+    margin-inline: auto;
+    padding-inline: 1rem;
+  }
+
+  @media (max-width: 986px) {
     padding-block: 7rem;
   }
 
@@ -33,10 +37,18 @@ const EmptySuggestionContent = styled.div`
   p {
     text-align: center;
     max-width: 50ch;
+
+    @media (max-width: 650px) {
+      max-width: 37ch;
+    }
   }
 
   p + button {
     margin-block-start: 3rem;
+
+    @media (max-width: 650px) {
+      margin-block-start: 2rem;
+    }
   }
 `;
 export default function NoSuggestions() {
