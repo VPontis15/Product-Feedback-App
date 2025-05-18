@@ -12,6 +12,14 @@ const RootLayout = styled.div`
   @media (max-width: 986px) {
     grid-template-columns: 1fr;
     padding-block: 3.875rem;
+    min-height: auto;
+    gap: 2.5rem;
+  }
+
+  @media (max-width: 650px) {
+    gap: 0;
+    padding-block: 0;
+    max-width: 100%;
   }
 `;
 
