@@ -51,6 +51,7 @@ const LoadingWrapper = styled.div`
   padding: 2rem;
 
   @media (max-width: 650px) {
+    top: 30px;
     height: calc(100svh - 10rem);
     padding: 0;
     margin-block-start: 2rem;
