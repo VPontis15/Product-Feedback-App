@@ -33,20 +33,20 @@ const ErrorIcon = styled.span`
 `;
 
 interface ErrorMessageProps {
-  message: string;
+  children: React.ReactNode;
   className?: string;
+  props?: unknown;
 }
 
 export default function ErrorMessage({
-  message,
+  children,
   className,
+  ...props
 }: ErrorMessageProps) {
   return (
-    <ErrorContainer className={className}>
+    <ErrorContainer {...props} className={className}>
       <ErrorIcon aria-hidden="true">!</ErrorIcon>
-      <ErrorText>
-        <strong>Error:</strong> {message}
-      </ErrorText>
+      <ErrorText>{children}</ErrorText>
     </ErrorContainer>
   );
 }
