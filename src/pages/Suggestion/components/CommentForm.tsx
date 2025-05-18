@@ -34,7 +34,7 @@ const StyledCommentForm = styled.div<{
 
       span {
         color: ${({ error }) =>
-          error ? 'var(--color-red)' : 'var(--color-dark-blue)'}; 
+          error ? 'var(--color-red)' : 'var(--color-dark-gray)'}; 
         font-size: var(--fs-md);
         font-weight: ${({ error }) => (error ? '700' : '400')};
       }
