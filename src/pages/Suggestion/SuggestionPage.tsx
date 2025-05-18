@@ -5,6 +5,7 @@ import supabase from '../../api/supabase';
 import Header from './components/Header';
 import Suggestion from '../Home/components/Suggestion';
 import CommentSection from './components/CommentSection';
+import CommentForm from './components/CommentForm';
 
 const StyledSuggestionPage = styled.main`
   display: flex;
@@ -74,6 +75,7 @@ export default function SuggestionPage() {
       <Header />
       <Suggestion isLoading={false} suggestion={suggestionData} />
       <CommentSection suggestionId={suggestionData.id} />
+      <CommentForm />
     </StyledSuggestionPage>
   );
 }
