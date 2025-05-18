@@ -6,7 +6,7 @@ import hamburgerIcon from '../../../assets/shared/mobile/icon-hamburger.svg';
 import closeMobileMenuIcon from '../../../assets/shared/mobile/icon-close.svg';
 
 const StyledHeader = styled.header`
-  position: relative;
+  position: sticky;
   display: grid;
   height: 100%;
   align-items: end;
