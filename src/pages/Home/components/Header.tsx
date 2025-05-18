@@ -113,7 +113,6 @@ export default function Header({ isOpen, handleIsOpen }: HeaderProps) {
           height={135}
           fetchPriority="high"
           src={backgroundHeader}
-          alt="Header background"
         />
       </picture>
       <div>
