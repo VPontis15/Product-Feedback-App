@@ -12,6 +12,14 @@ const Main = styled.main`
   height: 100%;
   gap: 1.5rem;
   position: relative;
+
+  @media (max-width: 650px) {
+    padding-block: 2rem;
+    gap: 0;
+    margin-inline: auto;
+    width: 100%;
+    max-width: min(1440px, 95%);
+  }
 `;
 const SuggestionsWrapper = styled.div`
   max-height: calc(100svh - 10rem);
