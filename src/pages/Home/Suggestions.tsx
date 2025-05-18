@@ -14,14 +14,15 @@ const Main = styled.main`
   position: relative;
 
   @media (max-width: 650px) {
-    padding-block: 2rem;
+    padding-block-end: 2rem;
     gap: 0;
     margin-inline: auto;
     width: 100%;
-    max-width: min(1440px, 95%);
   }
 `;
 const SuggestionsWrapper = styled.div`
+  max-width: min(1440px, 95%);
+  margin-inline: auto;
   max-height: calc(100svh - 10rem);
   overflow-y: auto;
   display: flex;
@@ -36,15 +37,22 @@ const LoadingWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100%;
+  height: calc(100svh - 400px);
   position: absolute;
   top: 0;
   width: 100%;
   font-size: var(--fs-lg);
   color: var(--color-dark-blue);
-  background-color: var(--color-orange);
+  background-color: var(--color-white);
   border-radius: var(--btn-radius);
   padding: 2rem;
+
+  @media (max-width: 650px) {
+    height: calc(100svh - 10rem);
+    padding: 0;
+    margin-block-start: 2rem;
+    border-radius: 0;
+  }
 
   .loader {
     width: 60px;

@@ -13,6 +13,8 @@ const EmptySuggestionContent = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  max-width: min(1440px, 95%);
+  margin-inline: auto;
   gap: 1rem;
   color: var(--color-dark-gray);
   background-color: var(--color-white);
