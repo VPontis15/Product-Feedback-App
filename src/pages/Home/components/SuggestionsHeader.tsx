@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import Select from 'react-select';
 import Button from '../../../components/Button';
 import suggestionsIcon from '../../../assets/suggestions/icon-suggestions.svg';
 const StyledSuggestionsHeader = styled.header`
@@ -21,7 +22,13 @@ const StyledSuggestionsHeader = styled.header`
     max-width: 100%;
   }
 
-  div {
+  section {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  section > div {
     display: flex;
     align-items: center;
     gap: 0.25rem;
@@ -44,6 +51,10 @@ const StyledSuggestionsHeader = styled.header`
     @media (max-width: 650px) {
       margin-inline: 0;
     }
+  }
+
+  h2 {
+    color: var(--color-white);
   }
 
   h2,
@@ -71,9 +82,15 @@ const StyledSuggestionsHeader = styled.header`
   }
 `;
 export default function SuggestionsHeader({ count }: { count: number }) {
+  const options = [
+    { value: 'most_upvotes', label: 'Most Upvotes' },
+    { value: 'least_upvotes', label: 'Least Upvotes' },
+    { value: 'most_comments', label: 'Most Comments' },
+    { value: 'least_comments', label: 'Least Comments' },
+  ];
   return (
     <StyledSuggestionsHeader>
-      <div>
+      <section>
         <div>
           <img src={suggestionsIcon} alt="" />
           <span>{count}</span>
@@ -82,15 +99,49 @@ export default function SuggestionsHeader({ count }: { count: number }) {
 
         <form action="">
           <label htmlFor="sort_by">Sort by:</label>
-          <select id="sort_by">
-            <option value="most_upvotes">Most Upvotes</option>
-            <option value="least_upvotes">Least Upvotes</option>
-            <option value="most_comments">Most Comments</option>
-            <option value="least_comments">Least Comments</option>
-          </select>
+          <Select
+            options={options}
+            defaultValue={options[0]}
+            isSearchable={false}
+            styles={{
+              control: (baseStyles) => ({
+                ...baseStyles,
+                backgroundColor: 'var(--color-black)',
+                color: 'var(--color-white)',
+                border: 'none',
+                boxShadow: 'none',
+                fontSize: 'var(--fs-xs)',
+                fontWeight: 700,
+                cursor: 'pointer',
+              }),
+              singleValue: (baseStyles) => ({
+                ...baseStyles,
+                color: 'var(--color-white)',
+              }),
+              menu: (baseStyles) => ({
+                ...baseStyles,
+                backgroundColor: 'var(--color-white)',
+                color: 'var(--color-black)',
+                border: 'none',
+                boxShadow: 'none',
+              }),
+              option: (baseStyles, { isFocused }) => ({
+                ...baseStyles,
+                backgroundColor: 'none',
+                color: isFocused
+                  ? 'var(--color-purple-hover)'
+                  : 'var(--color-dark-blue)',
+                fontSize: 'var(--fs-xs)',
+                fontWeight: 700,
+                borderBottom: '1px solid var(--color-gray)',
+              }),
+            }}
+          />
         </form>
-      </div>
-      <Button variant="primary">+ Add Feedback</Button>
+      </section>
+      <Button to="/feedback/new" variant="primary">
+        + Add Feedback
+      </Button>
     </StyledSuggestionsHeader>
   );
 }
