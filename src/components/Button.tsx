@@ -1,3 +1,4 @@
+import { Link } from 'react-router';
 import styled from 'styled-components';
 import { css } from 'styled-components';
 
@@ -13,6 +14,7 @@ const StyledButton = styled.button<{
   font-weight: 700;
   cursor: pointer;
   transition: all 0.2s ease;
+  text-decoration: none;
 
   /* Size variations */
   ${(props) =>
@@ -179,6 +181,7 @@ const StyledButton = styled.button<{
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
   variant?: 'primary' | 'secondary' | 'tertiary' | 'error' | 'filter' | 'text';
+  to?: string;
   isActive?: boolean;
   isLoading?: boolean;
   size?: 'sm' | 'base' | 'lg' | 'xl' | 'filter';
@@ -187,6 +190,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 
 export default function Button({
   children,
+  to,
   variant = 'primary',
   size = 'base',
   isActive = false,
@@ -195,6 +199,8 @@ export default function Button({
 }: ButtonProps) {
   return (
     <StyledButton
+      as={to ? Link : 'button'}
+      to={to}
       $isActive={isActive}
       $variant={variant}
       $size={size}
