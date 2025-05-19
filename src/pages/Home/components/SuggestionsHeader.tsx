@@ -32,9 +32,6 @@ const StyledSuggestionsHeader = styled.header`
     display: flex;
     align-items: center;
     gap: 0.25rem;
-  }
-
-  div > div {
     @media (max-width: 650px) {
       display: none;
     }
