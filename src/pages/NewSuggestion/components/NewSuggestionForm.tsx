@@ -97,8 +97,14 @@ export default function NewSuggestionForm() {
           description="Choose a category for your feedback"
         >
           <StyledSelect
-            defaultOption={selectCategories[0]?.value}
-            options={selectCategories}
+            defaultOption={
+              selectCategories[0] || { value: 'feature', label: 'Feature' }
+            }
+            options={
+              selectCategories.length > 0
+                ? selectCategories
+                : [{ value: 'feature', label: 'Feature' }]
+            }
           />
         </FormInput>
         <FormInput

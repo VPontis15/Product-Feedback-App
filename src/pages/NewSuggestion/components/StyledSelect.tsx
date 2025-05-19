@@ -45,6 +45,7 @@ export default function StyledSelect({
         option: (baseStyles, { isFocused }) => ({
           ...baseStyles,
           backgroundColor: 'none',
+          cursor: 'pointer',
           color: isFocused
             ? 'var(--color-purple-hover)'
             : 'var(--color-dark-blue)',

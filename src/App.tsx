@@ -1,4 +1,4 @@
-import { createBrowserRouter, RouterProvider } from 'react-router';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { createGlobalStyle } from 'styled-components';
 import Home from './pages/Home/Home';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
