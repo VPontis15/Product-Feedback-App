@@ -3,6 +3,7 @@ import { createGlobalStyle } from 'styled-components';
 import Home from './pages/Home/Home';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import SuggestionPage from './pages/Suggestion/SuggestionPage';
+import NewSuggestionPage from './pages/NewSuggestion/NewSuggestionPage';
 
 const GlobalStyle = createGlobalStyle`
 
@@ -25,7 +26,7 @@ const GlobalStyle = createGlobalStyle`
 --color-white-hover:#F7F8FD;
 --color-red-hover:#E98888;
 --color-comment: #8594F8;
---color-comment-divider:#8c92b3;
+--color-comment-divider:#979797;
 --color-skeleton: var(--color-comment-divider);
 --ff-primary: 'Jost', sans-serif;
 
@@ -45,6 +46,8 @@ const GlobalStyle = createGlobalStyle`
 --btn-radius: 0.675rem;
 --btn-width: 9.875rem;
 --btn-height: 2.75rem;
+
+--box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
 
 --grid-gap: 1.875rem;
 }
@@ -68,6 +71,11 @@ body {
   -moz-osx-font-smoothing: grayscale;
 
 }
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--ff-primary);
+  color: var(--color-dark-blue);
+}
   img {
     max-width: 100%;
     height: auto;
@@ -81,6 +89,10 @@ const router = createBrowserRouter([
   {
     path: 'feedback/:slug',
     element: <SuggestionPage />,
+  },
+  {
+    path: 'feedback/new',
+    element: <NewSuggestionPage />,
   },
 ]);
 
