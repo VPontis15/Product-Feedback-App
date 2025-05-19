@@ -55,6 +55,7 @@ const StyledText = styled.div`
     font-size: var(--fs-xl);
     line-height: var(--line-heading);
     font-weight: 700;
+    color: var(--color-white);
 
     @media (max-width: 650px) {
       font-size: var(--fs-base);
