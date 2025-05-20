@@ -60,13 +60,17 @@ export default function Suggestions() {
     queryFn: async () => {
       try {
         // Get feedback with category, status, and count comments for each feedback
-        const { data: suggestions, error } = await supabase.from('feedback')
-          .select(`
+        const { data: suggestions, error } = await supabase
+          .from('feedback')
+          .select(
+            `
           *,
-          category(category),
-          status(update_status),
+          category!inner(category),
+          status!inner(update_status),
           comment(count)
-        `);
+        `
+          )
+          .eq('status.update_status', 'Suggestion');
 
         if (error) {
           throw new Error(error.message);
