@@ -10,7 +10,7 @@ const SkeletonWrapper = styled.article`
   padding-inline: 1.5rem;
   display: grid;
   grid-template-columns: 2.5rem 1fr 2.5rem;
-  gap: 2.5rem;
+  gap: 2rem;
 
   @media (max-width: 550px) {
     grid-template-columns: 1fr;

@@ -26,7 +26,7 @@ const CommentWrapper = styled.article`
 
   display: grid;
   grid-template-columns: 2.5rem 1fr;
-  gap: 2.5rem;
+  gap: 2rem;
 `;
 
 const Avatar = styled.img`
