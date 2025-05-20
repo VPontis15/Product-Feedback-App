@@ -1,9 +1,9 @@
 import styled from 'styled-components';
 import arrowUp from '../../../assets/shared/icon-arrow-up.svg';
-import commentsSvg from '../../../assets/shared/icon-comments.svg';
 import Button from '../../../components/Button';
 import { Link } from 'react-router';
 import Skeleton from '../../../components/Skeleton';
+import CommentLogo from '../../../components/CommentLogo';
 
 // Update the interface to match the Supabase response structure
 interface SuggestionProps {
@@ -215,8 +215,7 @@ export default function Suggestion({ suggestion, isLoading }: SuggestionProps) {
         </Button>
       </SuggestionContent>
       <CommentsWrapper>
-        <img src={commentsSvg} alt="" />
-        <span>{commentsCount}</span>
+        <CommentLogo amount={commentsCount} />
       </CommentsWrapper>
     </SuggestionWrapper>
   );
