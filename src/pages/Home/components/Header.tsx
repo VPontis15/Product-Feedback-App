@@ -14,6 +14,7 @@ const StyledHeader = styled.header`
   border-radius: var(--btn-radius);
   overflow: hidden;
   padding-block: 3.875rem 1.5rem;
+  box-shadow: var(--box-shadow);
 
   div:nth-child(2) {
     display: flex;
