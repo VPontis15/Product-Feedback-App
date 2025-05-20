@@ -4,6 +4,7 @@ import UpVotesBtn from '../../../components/Upvotes';
 import CommentLogo from '../../../components/CommentLogo';
 import supabase from '../../../api/supabase';
 import { useQuery } from '@tanstack/react-query';
+import { Link } from 'react-router';
 
 const StyledRoadmapItem = styled.article<{ color: string }>`
   width: 100%;
@@ -23,8 +24,11 @@ const StyledRoadmapItem = styled.article<{ color: string }>`
     margin-block-end: 0.5rem;
   }
 
-  h3 {
+  a {
     font-size: var(--fs-lg);
+    text-decoration: none;
+    color: var(--color-dark-blue);
+    font-weight: 700;
   }
 
   p {
@@ -66,6 +70,22 @@ const StyledRoadmapItemColumnHeader = styled.div`
 const FeedBackItemColumnWrapper = styled.div`
   display: grid;
   gap: 1.5rem;
+`;
+
+const Circle = styled.div<{
+  color: string;
+}>`
+  width: 0.5rem;
+  height: 0.5rem;
+  background-color: ${({ color }) => color};
+  border-radius: 50%;
+  margin-block-end: 0.5rem;
+`;
+
+const TitleWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 `;
 
 export default function RoadmapItemColumn({
@@ -124,6 +144,7 @@ export default function RoadmapItemColumn({
               category: feedback.category.category,
               upvotes: feedback.upvotes,
               comments: feedback.comment.length,
+              slug: feedback.slug,
             }}
           />
         ))}
@@ -160,19 +181,23 @@ interface RoadmapItemProps {
     category: string;
     upvotes: number;
     comments: number;
+    slug: string;
   };
   color: string;
 }
 
 function RoadmapItem({ feedback, color }: RoadmapItemProps) {
-  const { id, title, description, status, category, upvotes, comments } =
+  const { id, title, slug, description, status, category, upvotes, comments } =
     feedback;
   return (
     <StyledRoadmapItem color={color}>
-      <h4>{status}</h4>
+      <TitleWrapper>
+        <Circle color={color} />
+        <h4>{status}</h4>
+      </TitleWrapper>
       <RoadmapItemContent>
         <div>
-          <h3>{title}</h3>
+          <Link to={`/feedback/${slug}`}>{title}</Link>
           <p>{description}</p>
         </div>
         <Button size="sm" variant="filter">
