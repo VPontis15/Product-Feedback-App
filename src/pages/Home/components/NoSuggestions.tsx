@@ -65,7 +65,9 @@ export default function NoSuggestions() {
         Got a suggestion? Found a bug that needs to be squashed? We love hearing
         about new ideas to improve our app.
       </p>
-      <Button variant="primary">+ Add Feedback</Button>
+      <Button to="/feedback/new" variant="primary">
+        + Add Feedback
+      </Button>
     </EmptySuggestionContent>
   );
 }
