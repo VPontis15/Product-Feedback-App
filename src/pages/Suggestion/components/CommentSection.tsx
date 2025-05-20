@@ -1,8 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 import supabase from '../../../api/supabase';
 import styled from 'styled-components';
-import Comment from './Comment';
 import Loader from '../../../components/Loader';
+import { Suspense, lazy } from 'react';
+
+const Comment = lazy(() => import('./Comment'));
 
 const CommentSectionContainer = styled.section`
   display: flex;
@@ -61,9 +63,7 @@ export default function CommentSection({
   return (
     <CommentSectionContainer>
       {isLoading ? (
-        <>
-          <Loader />
-        </>
+        <Loader />
       ) : error ? (
         <p>Error loading comments: {error.message}</p>
       ) : (
@@ -72,16 +72,18 @@ export default function CommentSection({
             <span>{comments?.length || 0}</span>{' '}
             {comments?.length == 1 ? 'Comment' : 'Comments'}
           </h2>
-          {comments
-            ?.filter((comment) => comment.parent_comment_id === null)
-            ?.map((comment) => (
-              <Comment
-                isLoading={false}
-                comment={comment}
-                key={comment.id}
-                allComments={comments}
-              />
-            ))}
+          <Suspense fallback={<Loader />}>
+            {comments
+              ?.filter((comment) => comment.parent_comment_id === null)
+              ?.map((comment) => (
+                <Comment
+                  isLoading={false}
+                  comment={comment}
+                  key={comment.id}
+                  allComments={comments}
+                />
+              ))}
+          </Suspense>
         </>
       )}
     </CommentSectionContainer>

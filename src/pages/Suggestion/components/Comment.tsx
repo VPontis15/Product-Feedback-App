@@ -80,7 +80,8 @@ const Divider = styled.hr`
 
 const RepliesContainer = styled.div`
   margin-block-start: 2rem;
-  margin-inline-start: 1.5rem;
+  padding-inline-start: 2.5rem;
+  margin-inline-start: 2rem;
   position: relative;
   display: grid;
   gap: 2rem;
