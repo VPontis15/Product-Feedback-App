@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import supabase from '../../../api/supabase';
 import styled from 'styled-components';
 import Comment from './Comment';
+import Loader from '../../../components/Loader';
 
 const CommentSectionContainer = styled.section`
   display: flex;
@@ -61,9 +62,7 @@ export default function CommentSection({
     <CommentSectionContainer>
       {isLoading ? (
         <>
-          <h2>Loading comments...</h2>
-          <Comment isLoading={true} comment={{} as any} />
-          <Comment isLoading={true} comment={{} as any} />
+          <Loader />
         </>
       ) : error ? (
         <p>Error loading comments: {error.message}</p>

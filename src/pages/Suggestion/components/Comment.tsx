@@ -177,7 +177,7 @@ export default function Comment({
       {/* Render replies with indentation */}
       {replies.length > 0 && (
         <RepliesContainer>
-          {[...replies, ...replies].map((reply) => (
+          {...replies.map((reply) => (
             <Comment key={reply.id} comment={reply} allComments={allComments} />
           ))}
         </RepliesContainer>
