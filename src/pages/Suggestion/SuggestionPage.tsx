@@ -9,6 +9,18 @@ const CommentSection = lazy(() => import('./components/CommentSection'));
 import CommentForm from './components/CommentForm';
 import Loader from '../../components/Loader';
 
+interface SuggestionData {
+  id: string;
+  title: string;
+  description: string;
+  slug: string;
+  category: { category: string };
+  status: { update_status: string };
+  comment: { count: number }[];
+  upvotes: number;
+  created_at: string;
+}
+
 const StyledSuggestionPage = styled.main`
   display: flex;
   flex-direction: column;
@@ -58,7 +70,7 @@ export default function SuggestionPage() {
     return (
       <StyledSuggestionPage>
         <Header />
-        <Suggestion isLoading={true} suggestion={{} as any} />
+        <Suggestion isLoading={true} suggestion={{} as SuggestionData} />
         {/* Don't render CommentSection during loading or pass a safe default */}
       </StyledSuggestionPage>
     );
