@@ -13,6 +13,7 @@ const StyledSuggestionsHeader = styled.header`
   padding-block: 1.5rem;
   padding-inline: 1.5rem 1rem;
   width: 100%;
+  box-shadow: var(--box-shadow);
 
   @media (max-width: 650px) {
     padding-block: 0.5rem;
