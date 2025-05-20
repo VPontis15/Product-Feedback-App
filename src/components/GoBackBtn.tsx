@@ -15,7 +15,8 @@ const StyledGoBackBtn = styled(Link)`
 export default function GoBackBtn() {
   return (
     <StyledGoBackBtn to="..">
-      <img src={arrowLeft} alt="" /> Go back
+      <img src={arrowLeft} alt="" />
+      <span>Go back</span>
     </StyledGoBackBtn>
   );
 }
