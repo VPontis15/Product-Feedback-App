@@ -3,6 +3,7 @@ import RoadmapItem from './RoadmapItem';
 import { useQuery } from '@tanstack/react-query';
 import supabase from '../../../api/supabase';
 import ErrorMessage from '../../../components/ErrorMessage';
+import { Link } from 'react-router';
 
 const StyledRoadmap = styled.div`
   display: grid;
@@ -78,7 +79,7 @@ export default function Roadmap() {
     <StyledRoadmap>
       <div>
         <h2>Roadmap</h2>
-        <a href="">View</a>
+        <Link to="/roadmap">View</Link>
       </div>
       <RoadmapItemWrapper>
         {isLoading
@@ -103,7 +104,7 @@ export default function Roadmap() {
                   isLoading={false}
                   key={roadmapItemData.id}
                   backgroundcolor={roadmapItemData.color}
-                  quantity={roadmapItemData.quantity}
+                  quantity={roadmapItemData.quantity || 0}
                 >
                   {roadmapItemData.update_status}
                 </RoadmapItem>
