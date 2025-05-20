@@ -4,6 +4,7 @@ import Home from './pages/Home/Home';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import SuggestionPage from './pages/Suggestion/SuggestionPage';
 import NewSuggestionPage from './pages/NewSuggestion/NewSuggestionPage';
+import RoadmapPage from './pages/Roadmap/RoadmapPage';
 
 const GlobalStyle = createGlobalStyle`
 
@@ -93,6 +94,10 @@ const router = createBrowserRouter([
   {
     path: 'feedback/new',
     element: <NewSuggestionPage />,
+  },
+  {
+    path: 'roadmap',
+    element: <RoadmapPage />,
   },
 ]);
 
