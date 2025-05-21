@@ -64,7 +64,7 @@ const SkeletonLikes = styled(Skeleton)`
   border: none;
   border-radius: var(--btn-radius);
   padding-inline: 0.5rem;
-  padding-block: 0.875rem 0.5rem;
+  padding-block: 0.5rem 0.5rem;
   cursor: pointer;
   height: 3rem;
   width: 2.5rem;

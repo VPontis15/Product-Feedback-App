@@ -15,7 +15,7 @@ const StyledUpvotes = styled.button<{
   border-radius: var(--btn-radius);
   background-color: var(--color-like);
   padding-inline: 0.5rem;
-  padding-block: 0.875rem 0.5rem;
+  padding-block: 0.75rem;
   cursor: pointer;
 
   span {
