@@ -1,7 +1,8 @@
 import styled from 'styled-components';
 import RoadmapItemColumn from './RoadmapItemColumn';
+import RoadmapContentWrapperMobile from './mobile/RoadmapContentWrapperMobile';
 
-interface RoadmapContentWrapperProps {
+export interface RoadmapContentWrapperProps {
   data: {
     id: string;
     color: string;
@@ -17,22 +18,29 @@ const StyledRoadmapContentWrapper = styled.main`
   gap: 1.875rem;
   margin-inline: auto;
   width: 100%;
+
+  @media (max-width: 650px) {
+    display: none;
+  }
 `;
 
 export default function RoadmapContentWrapper({
   data,
 }: RoadmapContentWrapperProps) {
   return (
-    <StyledRoadmapContentWrapper>
-      {data?.map((item) => (
-        <RoadmapItemColumn
-          color={item.color}
-          key={item.id}
-          title={item.update_status}
-          quantity={item.feedback[0].count}
-          description={item.description}
-        />
-      ))}
-    </StyledRoadmapContentWrapper>
+    <>
+      <RoadmapContentWrapperMobile data={data} />
+      <StyledRoadmapContentWrapper>
+        {data?.map((item) => (
+          <RoadmapItemColumn
+            color={item.color}
+            key={item.id}
+            title={item.update_status}
+            quantity={item.feedback[0].count}
+            description={item.description}
+          />
+        ))}
+      </StyledRoadmapContentWrapper>
+    </>
   );
 }
