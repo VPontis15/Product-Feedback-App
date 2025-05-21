@@ -5,6 +5,7 @@ import supabase from '../../../../api/supabase';
 import RoadmapHeaderMobile from './RoadmapHeaderMobile';
 import RoadmapItem from '../RoadmapItem';
 import type { RoadmapContentWrapperProps } from '../RoadmapContentWrapper';
+import { useMobileView } from '../../../../hooks/useMobileView';
 
 const StyledRoadmapContentWrapperMobile = styled.main`
   display: none;
@@ -42,7 +43,7 @@ export default function RoadmapContentWrapperMobile({
   data,
 }: RoadmapContentWrapperProps) {
   const [selectedStatus, setSelectedStatus] = useState(data?.[0]?.id || 1);
-
+  const isMobile = useMobileView();
   const { data: feedback } = useQuery({
     queryKey: ['roadmap-feedback', selectedStatus],
     queryFn: async () => {
@@ -68,7 +69,7 @@ export default function RoadmapContentWrapperMobile({
         return [];
       }
     },
-    enabled: !!selectedStatus, // Only run query when selectedStatus exists
+    enabled: !!selectedStatus && isMobile, // Only run query when selectedStatus exists
   });
   const selectedStatusData = data?.find(
     (status) => status.id === selectedStatus
