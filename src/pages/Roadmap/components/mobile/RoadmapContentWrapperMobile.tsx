@@ -41,7 +41,7 @@ const StyledRoadmapContentWrapperMobile = styled.main`
 export default function RoadmapContentWrapperMobile({
   data,
 }: RoadmapContentWrapperProps) {
-  const [selectedStatus, setSelectedStatus] = useState(data?.[0]?.id);
+  const [selectedStatus, setSelectedStatus] = useState(data?.[0]?.id || 1);
 
   const { data: feedback } = useQuery({
     queryKey: ['roadmap-feedback', selectedStatus],
