@@ -53,7 +53,7 @@ const Likes = styled.button`
   border-radius: var(--btn-radius);
   background-color: var(--color-like);
   padding-inline: .5rem;
-  padding-block: 0.875rem 0.5rem;
+  padding-block: 0.5rem 0.5rem;
   cursor: pointer;
 
   span {
@@ -169,7 +169,7 @@ const SkeletonLikes = styled(Skeleton)`
   border: none;
   border-radius: var(--btn-radius);
   padding-inline: 0.5.5rem;
-  padding-block: 0.875rem 0.5rem;
+  padding-block: 0.5rem 0.5rem;
   cursor: pointer;
   height: 3rem;
 `;
