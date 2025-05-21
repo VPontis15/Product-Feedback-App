@@ -4,6 +4,19 @@ import backgroundHeaderTablet from '../../../assets/suggestions/tablet/backgroun
 import backgroundHeaderMobile from '../../../assets/suggestions/mobile/background-header.png';
 import hamburgerIcon from '../../../assets/shared/mobile/icon-hamburger.svg';
 import closeMobileMenuIcon from '../../../assets/shared/mobile/icon-close.svg';
+import { preload } from 'react-dom';
+preload(backgroundHeader, {
+  as: 'image',
+  fetchPriority: 'high',
+});
+preload(backgroundHeaderTablet, {
+  as: 'image',
+  fetchPriority: 'high',
+});
+preload(backgroundHeaderMobile, {
+  as: 'image',
+  fetchPriority: 'high',
+});
 
 const StyledHeader = styled.header`
   position: sticky;
