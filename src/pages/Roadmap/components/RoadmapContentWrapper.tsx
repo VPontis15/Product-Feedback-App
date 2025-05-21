@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import RoadmapItemColumn from './RoadmapItemColumn';
 import RoadmapContentWrapperMobile from './mobile/RoadmapContentWrapperMobile';
+import { useMobileView } from '../../../hooks/useMobileView';
 
 export interface RoadmapContentWrapperProps {
   data: {
@@ -27,9 +28,12 @@ const StyledRoadmapContentWrapper = styled.main`
 export default function RoadmapContentWrapper({
   data,
 }: RoadmapContentWrapperProps) {
+  const isMobile = useMobileView();
+  if (isMobile) {
+    return <RoadmapContentWrapperMobile data={data} />;
+  }
   return (
     <>
-      <RoadmapContentWrapperMobile data={data} />
       <StyledRoadmapContentWrapper>
         {data?.map((item) => (
           <RoadmapItemColumn

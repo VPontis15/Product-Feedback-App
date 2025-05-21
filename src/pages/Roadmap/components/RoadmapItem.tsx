@@ -77,7 +77,11 @@ export interface RoadmapItemProps {
       category: string;
     };
     upvotes: number;
-    comment: number;
+    comment: [
+      {
+        count: number;
+      }
+    ];
     slug: string;
   };
   color: string;
