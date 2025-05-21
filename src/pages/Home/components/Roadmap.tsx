@@ -54,9 +54,8 @@ export default function Roadmap() {
     queryKey: ['statuses'],
     queryFn: async () => {
       try {
-        const { data: status, error } = await supabase
-          .from('status')
-          .select('*');
+        const { data: status, error } = await supabase.from('status').select(`*,
+            feedback:feedback (count)`);
         if (error) {
           throw new Error(error.message);
         }
@@ -104,7 +103,7 @@ export default function Roadmap() {
                   isLoading={false}
                   key={roadmapItemData.id}
                   backgroundcolor={roadmapItemData.color}
-                  quantity={roadmapItemData.quantity || 0}
+                  quantity={roadmapItemData.feedback[0].count || 0}
                 >
                   {roadmapItemData.update_status}
                 </RoadmapItem>
