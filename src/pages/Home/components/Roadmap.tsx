@@ -103,7 +103,11 @@ export default function Roadmap() {
                   isLoading={false}
                   key={roadmapItemData.id}
                   backgroundcolor={roadmapItemData.color}
-                  quantity={roadmapItemData.feedback[0].count || 0}
+                  quantity={
+                    roadmapItemData.feedback && roadmapItemData.feedback[0]
+                      ? roadmapItemData.feedback[0].count
+                      : 0
+                  }
                 >
                   {roadmapItemData.update_status}
                 </RoadmapItem>

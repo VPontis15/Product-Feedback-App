@@ -3,6 +3,7 @@ import RoadmapItem from '../RoadmapItem';
 import { useQuery } from '@tanstack/react-query';
 import supabase from '../../../../api/supabase';
 import ErrorMessage from '../../../../components/ErrorMessage';
+import { Link } from 'react-router';
 
 const StyledRoadmap = styled.div`
   gap: 1.5rem;
@@ -53,9 +54,8 @@ export default function RoadmapMobile() {
     queryKey: ['statuses'],
     queryFn: async () => {
       try {
-        const { data: status, error } = await supabase
-          .from('status')
-          .select('*');
+        const { data: status, error } = await supabase.from('status').select(`*,
+    feedback:feedback (count)`);
         if (error) {
           throw new Error(error.message);
         }
@@ -67,14 +67,16 @@ export default function RoadmapMobile() {
   });
 
   if (error) {
-    return <ErrorMessage message={error.message || 'Something went wrong'} />;
+    return (
+      <ErrorMessage>{error.message || 'Something went wrong'}</ErrorMessage>
+    );
   }
 
   return (
     <StyledRoadmap>
       <div>
         <h2>Roadmap</h2>
-        <a href="">View</a>
+        <Link to="/roadmap">View</Link>
       </div>
       <RoadmapItemWrapper>
         {isLoading
@@ -99,7 +101,11 @@ export default function RoadmapMobile() {
                   isLoading={false}
                   key={roadmapItemData.id}
                   backgroundcolor={roadmapItemData.color}
-                  quantity={roadmapItemData.quantity}
+                  quantity={
+                    roadmapItemData.feedback && roadmapItemData.feedback[0]
+                      ? roadmapItemData.feedback[0].count
+                      : 0
+                  }
                 >
                   {roadmapItemData.update_status}
                 </RoadmapItem>
