@@ -1,22 +1,29 @@
 import Select from 'react-select';
 
-interface SelectOptions {
+export interface SelectOption {
   value: string;
   label: string;
 }
 
 interface StyledSelectProps {
-  options: SelectOptions[];
-  defaultOption: SelectOptions;
+  options: SelectOption[];
+  defaultOption?: SelectOption;
+  value?: SelectOption;
+  onChange?: (selectedOption: SelectOption | null) => void;
 }
 
 export default function StyledSelect({
   options,
   defaultOption,
+  value,
+  onChange,
 }: StyledSelectProps) {
   return (
     <Select
       options={options}
+      required
+      value={value || defaultOption}
+      onChange={onChange}
       defaultValue={defaultOption}
       isSearchable={false}
       styles={{
