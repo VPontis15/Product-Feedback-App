@@ -4,6 +4,8 @@ import RoadmapContentWrapperMobile from './mobile/RoadmapContentWrapperMobile';
 import { useMobileView } from '../../../hooks/useMobileView';
 
 export interface RoadmapContentWrapperProps {
+  selectedStatus: string;
+  handleSelectedStatus: (status: string) => void;
   data: {
     id: string;
     color: string;
@@ -27,10 +29,19 @@ const StyledRoadmapContentWrapper = styled.main`
 
 export default function RoadmapContentWrapper({
   data,
+  selectedStatus,
+  handleSelectedStatus,
 }: RoadmapContentWrapperProps) {
   const isMobile = useMobileView();
+
   if (isMobile) {
-    return <RoadmapContentWrapperMobile data={data} />;
+    return (
+      <RoadmapContentWrapperMobile
+        selectedStatus={selectedStatus}
+        handleSelectedStatus={handleSelectedStatus}
+        data={data}
+      />
+    );
   }
   return (
     <>

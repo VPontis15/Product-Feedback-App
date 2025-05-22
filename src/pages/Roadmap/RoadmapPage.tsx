@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import Header from './components/Header';
 import { useQuery } from '@tanstack/react-query';
 import supabase from '../../api/supabase';
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, useState } from 'react';
 import Loader from '../../components/Loader';
 const RoadmapContentWrapper = lazy(
   () => import('./components/RoadmapContentWrapper')
@@ -19,6 +19,8 @@ const RoadmapPageWrapper = styled.div`
 `;
 
 export default function RoadmapPage() {
+  const [selectedStatus, setSelectedStatus] = useState('');
+
   const { data, error } = useQuery({
     queryKey: ['roadmap'],
     queryFn: async () => {
@@ -34,6 +36,8 @@ export default function RoadmapPage() {
         if (error) {
           throw new Error(error.message);
         }
+
+        setSelectedStatus(data[0]?.id);
         return data || [];
       } catch (error) {
         console.error('Error fetching roadmap data:', error);
@@ -53,7 +57,11 @@ export default function RoadmapPage() {
         <h1>YIKES</h1>
       ) : (
         <Suspense fallback={<Loader />}>
-          <RoadmapContentWrapper data={data || []} />
+          <RoadmapContentWrapper
+            selectedStatus={selectedStatus}
+            handleSelectedStatus={setSelectedStatus}
+            data={data || []}
+          />
         </Suspense>
       )}
     </RoadmapPageWrapper>

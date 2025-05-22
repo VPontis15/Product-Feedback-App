@@ -41,8 +41,9 @@ const StyledRoadmapContentWrapperMobile = styled.main`
 
 export default function RoadmapContentWrapperMobile({
   data,
+  selectedStatus,
+  handleSelectedStatus,
 }: RoadmapContentWrapperProps) {
-  const [selectedStatus, setSelectedStatus] = useState(data?.[0]?.id || 1);
   const isMobile = useMobileView();
   const { data: feedback } = useQuery({
     queryKey: ['roadmap-feedback', selectedStatus],
@@ -63,6 +64,7 @@ export default function RoadmapContentWrapperMobile({
         if (error) {
           throw new Error(error.message);
         }
+
         return data || [];
       } catch (error) {
         console.error('Error fetching roadmap feedback data:', error);
@@ -79,7 +81,7 @@ export default function RoadmapContentWrapperMobile({
     <StyledRoadmapContentWrapperMobile>
       <RoadmapHeaderMobile
         data={data}
-        handleStatusChange={setSelectedStatus}
+        handleStatusChange={handleSelectedStatus}
         selectedStatus={selectedStatus}
       />
       <section>
