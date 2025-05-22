@@ -21,7 +21,12 @@ interface SuggestionProps {
       update_status: string;
     };
     upvotes: number;
-    comment_count: number;
+    comment_count?: number;
+    comment: [
+      {
+        count: number;
+      }
+    ];
   };
 }
 
@@ -200,7 +205,6 @@ export default function Suggestion({
 
   const { title, slug, description, category, upvotes } = suggestion;
   const commentsCount = suggestion.comment_count || 0;
-
   return (
     <SuggestionWrapper>
       <Likes>
