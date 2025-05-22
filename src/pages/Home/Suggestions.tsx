@@ -9,7 +9,7 @@ import { useQuery } from '@tanstack/react-query';
 import supabase from '../../api/supabase';
 import ErrorMessage from '../../components/ErrorMessage';
 import Loader from '../../components/Loader';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 
 const Main = styled.main`
   display: flex;
@@ -57,36 +57,58 @@ const ErrorWrapper = styled.div`
 export default function Suggestions() {
   const [sortBy, setSortBy] = useState<SortOptionValue>(SORT_OPTIONS[0].value);
 
-  // Use the sort details in your query
+  // Use the query to fetch ALL data once
   const {
-    data: suggestions,
+    data: allSuggestions,
     error,
     isLoading,
   } = useQuery({
-    queryKey: ['suggestions', sortBy],
+    queryKey: ['suggestions'],
     queryFn: async () => {
-      const currentSortOption =
-        SORT_OPTIONS.find((option) => option.value === sortBy) ||
-        SORT_OPTIONS[0];
-
-      const { data } = await supabase
+      // Fetch all suggestions without any specific order
+      const { data, error } = await supabase
         .from('feedback_with_comment_count')
         .select(
           `
-      *,
-      category!inner(category),
-      status!inner(update_status)
-    `
+          *,
+          category!inner(category),
+          status!inner(update_status)
+        `
         )
-        .eq('status.update_status', 'Suggestion')
-        .order(currentSortOption.column, {
-          ascending: currentSortOption.order === 'asc',
-        });
+        .eq('status.update_status', 'Suggestion');
 
+      if (error) throw new Error(error.message);
       return data || [];
     },
+    staleTime: 60 * 1000, // Cache for 1 minute
+    refetchOnWindowFocus: false,
   });
-  console.log('Suggestions:', suggestions);
+
+  // Sort the data client-side using useMemo
+  const suggestions = useMemo(() => {
+    if (!allSuggestions) return [];
+
+    // Find the current sort option
+    const currentSortOption =
+      SORT_OPTIONS.find((option) => option.value === sortBy) || SORT_OPTIONS[0];
+
+    // Return a new sorted array
+    return [...allSuggestions].sort((a, b) => {
+      if (currentSortOption.column === 'upvotes') {
+        return currentSortOption.order === 'asc'
+          ? a.upvotes - b.upvotes
+          : b.upvotes - a.upvotes;
+      } else if (currentSortOption.column === 'comment_count') {
+        const aComments = a.comment_count || 0;
+        const bComments = b.comment_count || 0;
+        return currentSortOption.order === 'asc'
+          ? aComments - bComments
+          : bComments - aComments;
+      }
+      return 0;
+    });
+  }, [allSuggestions, sortBy]);
+
   const count = suggestions?.length || 0;
   return (
     <Main>
