@@ -1,11 +1,11 @@
 import styled from 'styled-components';
 
 const RootLayout = styled.div<{
-  hasAsidebar?: boolean;
+  $hasAsidebar?: boolean;
 }>`
   display: grid;
-  grid-template-columns: ${({ hasAsidebar }) =>
-    hasAsidebar ? '255px 1fr' : '1fr'};
+  grid-template-columns: ${({ $hasAsidebar }) =>
+    $hasAsidebar ? '255px 1fr' : '1fr'};
   gap: var(--grid-gap);
   max-width: min(1440px, 95%);
   margin-inline: auto;
@@ -34,5 +34,5 @@ export default function Layout({
   children: React.ReactNode;
   hasAsidebar?: boolean;
 }) {
-  return <RootLayout hasAsidebar={hasAsidebar}>{children}</RootLayout>;
+  return <RootLayout $hasAsidebar={hasAsidebar}>{children}</RootLayout>;
 }

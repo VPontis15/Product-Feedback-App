@@ -52,15 +52,15 @@ const AnimatedChild = styled(motion.div)`
   width: 100%;
 `;
 
-const Overlay = styled.div<{ isOpen: boolean }>`
+const Overlay = styled.div<{ $isOpen: boolean }>`
   position: fixed;
   inset: 0;
   top: 77px;
   background-color: rgba(0, 0, 0, 0.3);
   z-index: 998;
   transition: opacity 0.3s ease;
-  opacity: ${({ isOpen }) => (isOpen ? 1 : 0)};
-  pointer-events: ${({ isOpen }) => (isOpen ? 'auto' : 'none')};
+  opacity: ${({ $isOpen }) => ($isOpen ? 1 : 0)};
+  pointer-events: ${({ $isOpen }) => ($isOpen ? 'auto' : 'none')};
 `;
 
 // Animation variants
@@ -124,7 +124,7 @@ export default function Aside() {
       <Header isOpen={isOpen} handleIsOpen={setIsOpen} />
       <Filters />
       <Roadmap />
-      <Overlay onClick={handleClose} isOpen={isOpen} />
+      <Overlay onClick={handleClose} $isOpen={isOpen} />
       <AnimatePresence mode="wait">
         {isOpen && (
           <MobileWrapper
