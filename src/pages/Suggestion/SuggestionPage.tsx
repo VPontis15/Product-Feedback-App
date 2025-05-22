@@ -87,7 +87,11 @@ export default function SuggestionPage() {
   return (
     <StyledSuggestionPage>
       <Header />
-      <Suggestion isLoading={false} suggestion={suggestionData} />
+      <Suggestion
+        isSuggestionPage
+        isLoading={false}
+        suggestion={suggestionData}
+      />
       <Suspense fallback={<Loader />}>
         <CommentSection suggestionId={suggestionData.id} />
       </Suspense>
