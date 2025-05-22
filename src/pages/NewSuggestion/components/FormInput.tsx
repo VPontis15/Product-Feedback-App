@@ -1,3 +1,5 @@
+import React from 'react';
+import type { ChangeEvent } from 'react';
 import styled from 'styled-components';
 
 const FormGroup = styled.div`
@@ -43,6 +45,7 @@ const FormGroup = styled.div`
     font-size: var(--fs-sm);
   }
 `;
+
 interface FormInputProps {
   label: string;
   description: string;
@@ -53,7 +56,10 @@ interface FormInputProps {
   isTextarea?: boolean;
   rows?: number;
   children?: React.ReactNode;
+  value?: string | number;
+  onChange?: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
 }
+
 export default function FormInput({
   label,
   description,
@@ -64,6 +70,8 @@ export default function FormInput({
   isTextarea = false,
   rows = 0,
   children,
+  value,
+  onChange,
 }: FormInputProps) {
   return (
     <FormGroup>
@@ -73,9 +81,23 @@ export default function FormInput({
       </div>
       {!children &&
         (isTextarea ? (
-          <textarea id={id} rows={rows} name={name} required={required} />
+          <textarea
+            id={id}
+            rows={rows}
+            name={name}
+            required={required}
+            value={value}
+            onChange={onChange}
+          />
         ) : (
-          <input id={id} name={name} type={type} required={required} />
+          <input
+            id={id}
+            name={name}
+            type={type}
+            required={required}
+            value={value}
+            onChange={onChange}
+          />
         ))}
       {children}
     </FormGroup>
