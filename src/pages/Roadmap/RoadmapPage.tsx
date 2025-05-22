@@ -11,11 +11,17 @@ const RoadmapContentWrapper = lazy(
 const RoadmapPageWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  max-width: min(1440px, 95%);
+  max-width: min(1440px, 90%);
   margin-inline: auto;
   min-height: 100svh;
   padding-block: 5.9375rem;
   gap: 3rem;
+
+  @media (max-width: 650px) {
+    padding-block-start: 0;
+    gap: 2.5rem;
+    max-width: 100%;
+  }
 `;
 
 export default function RoadmapPage() {

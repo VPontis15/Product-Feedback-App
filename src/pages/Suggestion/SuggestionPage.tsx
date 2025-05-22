@@ -26,7 +26,7 @@ const StyledSuggestionPage = styled.main`
   flex-direction: column;
   gap: 1.5rem;
   align-self: start;
-  max-width: min(775px, 95%);
+  max-width: min(775px, 90%);
   margin-inline: auto;
   min-height: 100svh;
   padding-block-start: 5rem;

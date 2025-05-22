@@ -7,7 +7,7 @@ const RootLayout = styled.div<{
   grid-template-columns: ${({ $hasAsidebar }) =>
     $hasAsidebar ? '255px 1fr' : '1fr'};
   gap: var(--grid-gap);
-  max-width: min(1440px, 95%);
+  max-width: min(1440px, 90%);
   margin-inline: auto;
   min-height: 100svh;
   padding-block: 5.9375rem;

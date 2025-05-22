@@ -13,13 +13,15 @@ const StyledRoadmapContentWrapperMobile = styled.main`
   @media (max-width: 650px) {
     display: flex;
     flex-direction: column;
+    max-width: 90%;
+    margin-inline: auto;
   }
 
   header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    max-width: min(1440px, 95%);
+    max-width: min(1440px, 90%);
     gap: 1rem;
   }
 

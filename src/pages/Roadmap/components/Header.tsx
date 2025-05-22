@@ -25,7 +25,7 @@ const HeaderWrapper = styled.header`
 
   @media (max-width: 650px) {
     padding-inline: 1.5rem;
-    padding-block-start: 1.25rem;
+    border-radius: 0;
     padding-block-end: 1.5rem;
   }
 `;

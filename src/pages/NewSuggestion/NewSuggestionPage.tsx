@@ -8,7 +8,7 @@ const RootLayout = styled.main`
   gap: 2.5rem;
   align-items: center;
   padding-block: 3.5rem;
-  max-width: min(1140px, 95%);
+  max-width: min(1140px, 90%);
   margin-inline: auto;
   min-height: 100svh;
 `;

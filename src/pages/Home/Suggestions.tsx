@@ -36,7 +36,7 @@ const SuggestionsWrapper = styled.div`
   gap: 1.5rem;
 
   @media (max-width: 650px) {
-    max-width: min(1440px, 95%);
+    max-width: min(1440px, 90%);
     margin-inline: auto;
   }
 `;

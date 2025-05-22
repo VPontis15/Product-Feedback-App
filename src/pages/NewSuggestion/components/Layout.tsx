@@ -4,7 +4,7 @@ const RootLayout = styled.main`
   display: grid;
   grid-template-columns: 255px 1fr;
   gap: var(--grid-gap);
-  max-width: min(1140px, 95%);
+  max-width: min(1140px, 90%);
   margin-inline: auto;
   min-height: 100svh;
   padding-block: 5.9375rem;
