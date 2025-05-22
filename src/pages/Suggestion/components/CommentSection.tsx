@@ -59,7 +59,6 @@ export default function CommentSection({
     enabled: !!suggestionId,
   });
 
-  console.log('comments', comments);
   return (
     <CommentSectionContainer>
       {isLoading ? (
