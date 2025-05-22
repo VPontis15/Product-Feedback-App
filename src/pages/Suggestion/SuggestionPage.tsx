@@ -44,13 +44,12 @@ export default function SuggestionPage() {
     queryFn: async () => {
       try {
         const { data: suggestion, error } = await supabase
-          .from('feedback')
+          .from('feedback_with_comment_count')
           .select(
             `
           *,
-          category(category),
-          status(update_status),
-          comment(count)
+          category!inner(category),
+          status!inner(update_status)
         `
           )
           .eq('slug', slug)
