@@ -47,6 +47,12 @@ const RoadmapItemContent = styled.div`
   gap: 1rem;
   width: 100%;
   align-items: start;
+
+  > div {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+  }
 `;
 
 const Circle = styled.div<{
@@ -100,7 +106,11 @@ export default function RoadmapItem({ feedback, color }: RoadmapItemProps) {
       <RoadmapItemContent>
         <div>
           <Link to={`/feedback/${slug}`}>{title}</Link>
-          <p>{description}</p>
+          <p>
+            {description.length > 55
+              ? description.slice(0, 45) + '...'
+              : description}
+          </p>
         </div>
         <Button size="sm" variant="filter">
           {category.category}
