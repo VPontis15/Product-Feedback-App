@@ -7,6 +7,7 @@ import CommentLogo from '../../../components/CommentLogo';
 
 // Update the interface to match the Supabase response structure
 interface SuggestionProps {
+  isSuggestionPage?: boolean;
   isLoading?: boolean;
   suggestion: {
     id: string;
@@ -20,9 +21,7 @@ interface SuggestionProps {
       update_status: string;
     };
     upvotes: number;
-    comment: {
-      count: number;
-    }[];
+    comment_count: number;
   };
 }
 
@@ -108,7 +107,8 @@ const SuggestionDetailsWrapper = styled.div`
   gap: 1rem;
   justify-content: space-between;
 
-  a {
+  a,
+  h1 {
     color: var(--color-dark-blue);
     font-size: var(--fs-lg);
     font-weight: 700;
@@ -174,7 +174,11 @@ const SkeletonLikes = styled(Skeleton)`
   height: 3rem;
 `;
 
-export default function Suggestion({ suggestion, isLoading }: SuggestionProps) {
+export default function Suggestion({
+  suggestion,
+  isSuggestionPage = false,
+  isLoading,
+}: SuggestionProps) {
   if (isLoading) {
     return (
       <SuggestionWrapper>
@@ -195,7 +199,7 @@ export default function Suggestion({ suggestion, isLoading }: SuggestionProps) {
   }
 
   const { title, slug, description, category, upvotes } = suggestion;
-  const commentsCount = suggestion.comment[0]?.count || 0;
+  const commentsCount = suggestion.comment_count || 0;
 
   return (
     <SuggestionWrapper>
@@ -206,7 +210,11 @@ export default function Suggestion({ suggestion, isLoading }: SuggestionProps) {
       <SuggestionContent>
         <SuggestionDetailsWrapper>
           <div>
-            <Link to={`/feedback/${slug}`}>{title}</Link>
+            {isSuggestionPage ? (
+              <h1>{title}</h1>
+            ) : (
+              <Link to={`/feedback/${slug}`}>{title}</Link>
+            )}
             <p>{description}</p>
           </div>
         </SuggestionDetailsWrapper>

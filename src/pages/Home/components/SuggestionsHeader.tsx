@@ -1,7 +1,53 @@
+import { useMemo } from 'react';
 import styled from 'styled-components';
 import Select from 'react-select';
 import Button from '../../../components/Button';
 import suggestionsIcon from '../../../assets/suggestions/icon-suggestions.svg';
+
+// Define enum for sort options for better type safety
+export enum SortOptionValue {
+  MOST_UPVOTES = 'most_upvotes',
+  LEAST_UPVOTES = 'least_upvotes',
+  MOST_COMMENTS = 'most_comments',
+  LEAST_COMMENTS = 'least_comments',
+}
+
+// Define interface for sort option
+interface SortOption {
+  value: SortOptionValue;
+  label: string;
+  column: 'upvotes' | 'comment_count';
+  order: 'asc' | 'desc';
+}
+
+// Create a constant array of all sort options with their properties
+export const SORT_OPTIONS: SortOption[] = [
+  {
+    value: SortOptionValue.MOST_UPVOTES,
+    label: 'Most Upvotes',
+    column: 'upvotes',
+    order: 'desc',
+  },
+  {
+    value: SortOptionValue.LEAST_UPVOTES,
+    label: 'Least Upvotes',
+    column: 'upvotes',
+    order: 'asc',
+  },
+  {
+    value: SortOptionValue.MOST_COMMENTS,
+    label: 'Most Comments',
+    column: 'comment_count',
+    order: 'desc',
+  },
+  {
+    value: SortOptionValue.LEAST_COMMENTS,
+    label: 'Least Comments',
+    column: 'comment_count',
+    order: 'asc',
+  },
+];
+
 const StyledSuggestionsHeader = styled.header`
   display: flex;
   background-color: var(--color-black);
@@ -79,13 +125,32 @@ const StyledSuggestionsHeader = styled.header`
     font-size: var(--fs-xs);
   }
 `;
-export default function SuggestionsHeader({ count }: { count: number }) {
-  const options = [
-    { value: 'most_upvotes', label: 'Most Upvotes' },
-    { value: 'least_upvotes', label: 'Least Upvotes' },
-    { value: 'most_comments', label: 'Most Comments' },
-    { value: 'least_comments', label: 'Least Comments' },
-  ];
+
+interface SuggestionsHeaderProps {
+  count: number;
+  sortBy: SortOptionValue;
+  onSortChange: (option: SortOptionValue) => void;
+}
+
+export default function SuggestionsHeader({
+  count,
+  sortBy,
+  onSortChange,
+}: SuggestionsHeaderProps) {
+  // Find the current selected option
+  const selectedOption = useMemo(
+    () =>
+      SORT_OPTIONS.find((option) => option.value === sortBy) || SORT_OPTIONS[0],
+    [sortBy]
+  );
+
+  // Handle sort change
+  const handleSortChange = (option: SortOption | null) => {
+    if (option) {
+      onSortChange(option.value);
+    }
+  };
+
   return (
     <StyledSuggestionsHeader>
       <section>
@@ -98,9 +163,11 @@ export default function SuggestionsHeader({ count }: { count: number }) {
         <form action="">
           <label htmlFor="sort_by">Sort by:</label>
           <Select
-            options={options}
-            defaultValue={options[0]}
+            options={SORT_OPTIONS}
+            defaultValue={SORT_OPTIONS[0]}
             isSearchable={false}
+            value={selectedOption}
+            onChange={handleSortChange}
             styles={{
               control: (baseStyles) => ({
                 ...baseStyles,
