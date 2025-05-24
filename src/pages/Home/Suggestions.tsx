@@ -10,6 +10,7 @@ import supabase from '../../api/supabase';
 import ErrorMessage from '../../components/ErrorMessage';
 import Loader from '../../components/Loader';
 import { useState, useMemo } from 'react';
+import { useFiltersContext } from '../../context/filtersContext';
 
 const Main = styled.main`
   display: flex;
@@ -56,7 +57,7 @@ const ErrorWrapper = styled.div`
 
 export default function Suggestions() {
   const [sortBy, setSortBy] = useState<SortOptionValue>(SORT_OPTIONS[0].value);
-
+  const { filter } = useFiltersContext();
   // Use the query to fetch ALL data once
   const {
     data: allSuggestions,
@@ -84,16 +85,23 @@ export default function Suggestions() {
     refetchOnWindowFocus: false,
   });
 
-  // Sort the data client-side using useMemo
+  // Filter and sort suggestions
   const suggestions = useMemo(() => {
     if (!allSuggestions) return [];
 
-    // Find the current sort option
+    // First, filter by category
+    let filtered = allSuggestions;
+    if (filter !== 'All') {
+      filtered = allSuggestions.filter(
+        (suggestion) => suggestion.category.category === filter
+      );
+    }
+
+    // Then, sort the filtered results
     const currentSortOption =
       SORT_OPTIONS.find((option) => option.value === sortBy) || SORT_OPTIONS[0];
 
-    // Return a new sorted array
-    return [...allSuggestions].sort((a, b) => {
+    return [...filtered].sort((a, b) => {
       if (currentSortOption.column === 'upvotes') {
         return currentSortOption.order === 'asc'
           ? a.upvotes - b.upvotes
@@ -107,7 +115,7 @@ export default function Suggestions() {
       }
       return 0;
     });
-  }, [allSuggestions, sortBy]);
+  }, [allSuggestions, filter, sortBy]);
 
   const count = suggestions?.length || 0;
   return (

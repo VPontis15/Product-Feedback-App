@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import supabase from '../../../api/supabase';
 import Skeleton from '../../../components/Skeleton';
 import ErrorMessage from '../../../components/ErrorMessage';
+import { useFiltersContext } from '../../../context/filtersContext';
 
 const FiltersWrapper = styled.div`
   display: flex;
@@ -30,6 +31,14 @@ const SkeletonButton = styled(Skeleton)`
 `;
 
 export default function Filters() {
+  const { setFilter, filter } = useFiltersContext();
+  const handleFilterClick = (category: string) => {
+    setFilter(category);
+    // Reset the filter to 'All' if the same category is clicked again
+    if (filter === category) {
+      setFilter('All');
+    }
+  };
   const {
     data: filters,
     error,
@@ -60,7 +69,12 @@ export default function Filters() {
 
   return (
     <FiltersWrapper>
-      <Button isActive variant="filter" size="filter">
+      <Button
+        onClick={() => handleFilterClick('All')}
+        isActive={filter === 'All'}
+        variant="filter"
+        size="filter"
+      >
         All
       </Button>
       {isLoading
@@ -70,9 +84,15 @@ export default function Filters() {
             .map((_, index) => (
               <SkeletonButton key={`skeleton-filter-${index}`} />
             ))
-        : filters?.map((filter) => (
-            <Button key={filter.id} variant="filter" size="filter">
-              {filter.category}
+        : filters?.map((filterItem) => (
+            <Button
+              isActive={filterItem.category === filter}
+              onClick={() => handleFilterClick(filterItem.category)}
+              key={filterItem.id}
+              variant="filter"
+              size="filter"
+            >
+              {filterItem.category}
             </Button>
           ))}
     </FiltersWrapper>
