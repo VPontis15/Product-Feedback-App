@@ -2,6 +2,13 @@ import styled from 'styled-components';
 import Button from '../../../components/Button';
 import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
+import {
+  queryOptions,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
+import supabase from '../../../api/supabase';
 
 const StyledCommentForm = styled.div<{
   error: boolean;
@@ -73,12 +80,12 @@ const ErrorMessage = styled(motion.span)`
     bottom: 35px;
   }
 `;
-const COMMENT_MAX_LENGTH = 5;
-export default function CommentForm() {
+const COMMENT_MAX_LENGTH = 250;
+export default function CommentForm({ slug }: { slug: string }) {
   const [charactersLeft, setCharactersLeft] = useState(COMMENT_MAX_LENGTH);
   const [comment, setComment] = useState('');
   const [error, setError] = useState<string | null>(null);
-
+  const queryClient = useQueryClient();
   const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value;
     const remainingChars = COMMENT_MAX_LENGTH - value.length;
@@ -94,8 +101,84 @@ export default function CommentForm() {
     }
   };
 
+  const { data: feedback_id } = useQuery({
+    queryKey: ['feedbackId', slug],
+    queryFn: async () => {
+      try {
+        const { data, error } = await supabase
+          .from('feedback')
+          .select('id')
+          .eq('slug', slug)
+          .single();
+        if (error) {
+          throw new Error(error.message);
+        }
+        return data.id;
+      } catch (error) {
+        console.error('Error fetching feedback ID:', error);
+        throw error; // Re-throw to let React Query handle it
+      }
+    },
+    enabled: !!slug, // Only run this query if slug is available
+    //run only once on mount
+    staleTime: Infinity,
+    refetchOnWindowFocus: false,
+  });
+
+  const { mutate: addComment, error: insertionError } = useMutation({
+    mutationFn: async () => {
+      try {
+        if (
+          comment.length === 0 ||
+          comment.length > COMMENT_MAX_LENGTH ||
+          !feedback_id
+        ) {
+          throw new Error(
+            `Comment must be between 1 and ${COMMENT_MAX_LENGTH} characters long`
+          );
+        }
+        const { data, error } = await supabase
+          .from('comment')
+          .insert({ comment, feedback_id, user_id: 2, parent_comment_id: 8 })
+          .select();
+        if (error) {
+          throw new Error(error.message || 'Failed to add comment');
+        }
+        return data;
+      } catch (error) {
+        console.error('Error adding comment:', error);
+        throw error; // Re-throw to let React Query handle it
+      }
+    },
+    onSuccess: () => {
+      setComment('');
+      setCharactersLeft(COMMENT_MAX_LENGTH);
+      setError(null);
+      queryClient.invalidateQueries({
+        queryKey: ['suggestion', slug],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['suggestion-comment', feedback_id],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['suggestions'],
+      });
+    },
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (comment.length === 0 || comment.length > COMMENT_MAX_LENGTH) {
+      setError(
+        `Comment must be between 1 and ${COMMENT_MAX_LENGTH} characters long`
+      );
+      return;
+    }
+    addComment();
+  };
+
   return (
-    <StyledCommentForm error={!!error}>
+    <StyledCommentForm onSubmit={handleSubmit} error={!!error}>
       <h2>Add Comment</h2>
       <form>
         <StyledTextarea
@@ -130,6 +213,15 @@ export default function CommentForm() {
           <Button type="submit">Submit</Button>
         </div>
       </form>
+      {insertionError && (
+        <ErrorMessage
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -10 }}
+        >
+          {insertionError.message}
+        </ErrorMessage>
+      )}
     </StyledCommentForm>
   );
 }
