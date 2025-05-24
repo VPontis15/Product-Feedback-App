@@ -48,10 +48,9 @@ const RoadmapItemContent = styled.div`
   width: 100%;
   align-items: start;
 
-  > div {
-    display: flex;
-    flex-direction: column;
-    gap: 0.55rem;
+  a {
+    margin-block-end: 0.55rem;
+    display: inline-block;
   }
 `;
 
