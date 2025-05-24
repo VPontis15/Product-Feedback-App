@@ -42,6 +42,13 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+body:has(#mobile-wrapper) {
+  overflow-y: hidden;
+}
+body:has(#mobile-wrapper) #mobile-wrapper {
+  overflow-y: auto;
+}
+
 h1,
 h2,
 h3,
