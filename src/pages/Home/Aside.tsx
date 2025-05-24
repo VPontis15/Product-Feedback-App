@@ -7,6 +7,7 @@ import FiltersMobile from './components/mobile/FiltersMobile';
 import RoadmapMobile from './components/mobile/RoadmapMobile';
 
 import { motion, AnimatePresence } from 'framer-motion';
+import { useMobileView } from '../../hooks/useMobileView';
 
 const StyledAside = styled.aside`
   display: grid;
@@ -113,6 +114,7 @@ const itemVariants = {
 
 export default function Aside() {
   const [isOpen, setIsOpen] = useState(false);
+  const isMobile = useMobileView();
 
   // Animation-aware close handler
   const handleClose = () => {
@@ -124,24 +126,29 @@ export default function Aside() {
       <Header isOpen={isOpen} handleIsOpen={setIsOpen} />
       <Filters />
       <Roadmap />
-      <Overlay onClick={handleClose} $isOpen={isOpen} />
-      <AnimatePresence mode="wait">
-        {isOpen && (
-          <MobileWrapper
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-          >
-            <AnimatedChild variants={itemVariants}>
-              <FiltersMobile />
-            </AnimatedChild>
-            <AnimatedChild variants={itemVariants}>
-              <RoadmapMobile />
-            </AnimatedChild>
-          </MobileWrapper>
-        )}
-      </AnimatePresence>
+      {isMobile && (
+        <>
+          <Overlay onClick={handleClose} $isOpen={isOpen} />
+          <AnimatePresence mode="wait">
+            {isOpen && (
+              <MobileWrapper
+                id="mobile-wrapper"
+                variants={containerVariants}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+              >
+                <AnimatedChild variants={itemVariants}>
+                  <FiltersMobile />
+                </AnimatedChild>
+                <AnimatedChild variants={itemVariants}>
+                  <RoadmapMobile />
+                </AnimatedChild>
+              </MobileWrapper>
+            )}
+          </AnimatePresence>
+        </>
+      )}
     </StyledAside>
   );
 }
