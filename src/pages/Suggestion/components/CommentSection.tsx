@@ -47,7 +47,14 @@ export default function CommentSection({
           .from('comment')
           .select(
             `*,
-            user:user_id (*)`
+            user:users!comment_user_id_fkey (
+            id,
+            username,
+            first_name,
+            last_name,
+            avatar_image_url
+          )
+            `
           )
           .eq('feedback_id', suggestionId)
           .order('created_at', { ascending: false });
