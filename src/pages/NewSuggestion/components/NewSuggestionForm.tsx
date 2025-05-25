@@ -2,11 +2,11 @@ import styled from 'styled-components';
 import FormInput from './FormInput';
 import Button from '../../../components/Button';
 import StyledSelect, { type SelectOption } from './StyledSelect';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import supabase from '../../../api/supabase';
 import newFeedBackIcon from '../../../assets/shared/icon-new-feedback.svg';
 import { useState, useEffect, useMemo } from 'react';
-import { useNavigate } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 
 const FormWrapper = styled.div`
   display: flex;
@@ -55,6 +55,8 @@ export default function NewSuggestionForm() {
     category: '',
     detail: '',
   });
+
+  const { slug } = useParams<{ slug: string }>();
 
   const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState<SelectOption | null>(
@@ -123,6 +125,7 @@ export default function NewSuggestionForm() {
     }
   }, [selectCategories, selectedCategory]);
 
+  // Fetch the status ID for 'Suggestion' from the database
   const { data: status_id } = useQuery({
     queryKey: ['SuggestionStatus'],
     queryFn: async () => {
@@ -145,28 +148,97 @@ export default function NewSuggestionForm() {
     refetchOnReconnect: false, // Don't refetch on reconnect
   });
 
-  // Mutation to create new feedback
-  // This mutation will be triggered when the form is submitted
+  const { data: existingFeedback } = useQuery({
+    queryKey: ['existingFeedback', slug],
+    queryFn: async () => {
+      if (!slug) return null; // Don't run if no slug
+
+      try {
+        const { data, error } = await supabase
+          .from('feedback')
+          .select('title, description, category!inner(category)')
+          .eq('slug', slug)
+          .single();
+
+        if (error) {
+          throw new Error(error.message);
+        }
+
+        return data;
+      } catch (error) {
+        console.error('Error fetching existing feedback:', error);
+        return null;
+      }
+    },
+    enabled: !!slug, // Only run the query if slug exists
+  });
+
+  const queryClient = useQueryClient();
+
+  // Replace your existing mutation with this combined one
   const { mutate, isPending, error } = useMutation({
-    mutationFn: async (newFeedback: {
+    mutationFn: async (feedbackData: {
       title: string;
       category_id: number;
       upvotes: number;
       slug: string;
+      description: string;
+      update_status_id: number;
     }) => {
       try {
-        const { data, error } = await supabase
-          .from('feedback')
-          .insert(newFeedback);
-        if (error) {
-          throw new Error(error.message);
+        if (slug) {
+          // Update existing feedback
+          const { data, error } = await supabase
+            .from('feedback')
+            .update({
+              title: feedbackData.title,
+              category_id: feedbackData.category_id,
+              description: feedbackData.description,
+            })
+            .eq('slug', slug)
+            .select();
+
+          if (error) {
+            throw new Error(error.message);
+          }
+          return data;
+        } else {
+          // Create new feedback
+          const { data, error } = await supabase
+            .from('feedback')
+            .insert({
+              title: feedbackData.title,
+              category_id: feedbackData.category_id,
+              update_status_id: feedbackData.update_status_id,
+              description: feedbackData.description,
+              upvotes: feedbackData.upvotes,
+              slug: feedbackData.slug,
+            })
+            .select();
+
+          if (error) {
+            throw new Error(error.message);
+          }
+          return data;
         }
-        return data;
       } catch (error) {
-        console.error('Error creating feedback:', error);
+        console.error('Error saving feedback:', error);
+        throw error;
       }
     },
     onSuccess: () => {
+      // Invalidate the suggestions query to refresh the list
+      queryClient.invalidateQueries({
+        queryKey: ['suggestions'],
+      });
+
+      // Also invalidate the specific suggestion if updating
+      if (slug) {
+        queryClient.invalidateQueries({
+          queryKey: ['suggestion', slug],
+        });
+      }
+
       navigate('/');
     },
   });
@@ -174,26 +246,60 @@ export default function NewSuggestionForm() {
   // Handle form submission
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const newFeedback = {
+
+    // Generate slug only once
+    const generatedSlug = formData.title
+      .toLowerCase()
+      .trim()
+      .replace(/\s+/g, '-')
+      .replace(/[^\w-]+/g, '')
+      .substring(0, 50); // Limit length to prevent overly long slugs
+
+    const feedbackData = {
       title: formData.title,
       category_id: +formData.category,
-      update_status_id: status_id?.[0]?.id || null,
+      update_status_id: status_id?.[0]?.id || 1,
       description: formData.detail,
       upvotes: 0,
-      slug: formData.title
-        .toLowerCase()
-        .replace(/\s+/g, '-')
-        .replace(/[^\w-]+/g, ''),
+      slug: generatedSlug,
     };
-    if (
-      !newFeedback.title ||
-      !newFeedback.category_id ||
-      status_id?.[0]?.id === null
-    ) {
+
+    // Validation
+    if (!feedbackData.title.trim() || !feedbackData.category_id) {
+      console.error('Title and category are required');
       return;
     }
-    mutate(newFeedback);
+
+    if (!slug && !feedbackData.update_status_id) {
+      console.error('Status ID is required for new feedback');
+      return;
+    }
+
+    mutate(feedbackData);
   };
+
+  useEffect(() => {
+    if (existingFeedback) {
+      setFormData({
+        title: existingFeedback.title || '',
+        category: existingFeedback.category?.category || '',
+        detail: existingFeedback.description || '',
+      });
+
+      // Find the matching category option by label (category name)
+      const categoryOption = selectCategories.find(
+        (option) => option.label === existingFeedback.category?.category
+      );
+      if (categoryOption) {
+        setSelectedCategory(categoryOption);
+        // Update formData with the category ID, not the name
+        setFormData((prev) => ({
+          ...prev,
+          category: categoryOption.value.toString(),
+        }));
+      }
+    }
+  }, [existingFeedback, selectCategories]);
 
   return (
     <>
@@ -204,12 +310,13 @@ export default function NewSuggestionForm() {
           src={newFeedBackIcon}
           alt="New Feedback Icon"
         />
-        <h1>Create New Feedback</h1>
+        <h1>{slug ? 'Edit Feedback' : 'Create New Feedback'}</h1>
         <Form onSubmit={handleSubmit}>
           <FormInput
             isTextarea
             name="title"
             id="title"
+            defaultValue={existingFeedback?.title || ''}
             label="Feedback Title"
             description="Add a short, descriptive headline"
             value={formData.title}
@@ -217,6 +324,7 @@ export default function NewSuggestionForm() {
             onChange={handleFormData}
           />
           <FormInput
+            defaultValue={existingFeedback?.category || ''}
             name="category"
             id="category"
             label="Category"
@@ -245,7 +353,13 @@ export default function NewSuggestionForm() {
               Cancel
             </Button>
             <Button type="submit" variant="primary">
-              {isPending ? 'Creating...' : 'Add Feedback'}
+              {!slug
+                ? isPending
+                  ? 'Creating...'
+                  : 'Add Feedback'
+                : isPending
+                ? 'Saving...'
+                : 'Update Feedback'}
             </Button>
           </div>
         </Form>
