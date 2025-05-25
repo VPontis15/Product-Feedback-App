@@ -69,7 +69,19 @@ export default function SuggestionPage() {
     return (
       <StyledSuggestionPage>
         <Header />
-        <Suggestion isLoading={true} suggestion={{} as SuggestionData} />
+        <Suggestion
+          isLoading={true}
+          suggestion={{
+            id: '',
+            title: '',
+            description: '',
+            slug: '',
+            category: { category: '' },
+            status: { update_status: '' },
+            comment: [{ count: 0 }],
+            upvotes: 0,
+          }}
+        />
         {/* Don't render CommentSection during loading or pass a safe default */}
       </StyledSuggestionPage>
     );
