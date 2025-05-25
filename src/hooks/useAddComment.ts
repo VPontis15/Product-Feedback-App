@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import supabase from '../api/supabase';
+import { useAuth } from './useAuth';
 
 interface UseAddCommentParams {
   feedback_id: number | undefined;
@@ -20,6 +21,7 @@ export function useAddComment({
   onSuccess,
 }: UseAddCommentParams) {
   const queryClient = useQueryClient();
+  const { user } = useAuth();
 
   return useMutation({
     mutationFn: async ({
@@ -39,7 +41,12 @@ export function useAddComment({
 
         const { data, error } = await supabase
           .from('comment')
-          .insert({ comment, feedback_id, user_id: 2, parent_comment_id })
+          .insert({
+            comment,
+            feedback_id,
+            user_id: user?.id,
+            parent_comment_id,
+          })
           .select();
 
         if (error) {
