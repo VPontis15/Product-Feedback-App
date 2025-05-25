@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import supabase from '../../../api/supabase';
 import styled from 'styled-components';
 import Loader from '../../../components/Loader';
-import { Suspense, lazy } from 'react';
+import { Suspense, lazy, useState } from 'react';
 
 const Comment = lazy(() => import('./Comment'));
 
@@ -30,6 +30,11 @@ export default function CommentSection({
 }: {
   suggestionId: number;
 }) {
+  const [replyId, setReplyId] = useState<number | null>(null);
+
+  const handleReplyClick = (id: number | null) => {
+    setReplyId((prev) => (prev === id ? null : id));
+  };
   const {
     data: comments,
     error,
@@ -78,6 +83,8 @@ export default function CommentSection({
                 <Comment
                   isLoading={false}
                   comment={comment}
+                  replyId={replyId}
+                  onReplyClick={handleReplyClick}
                   key={comment.id}
                   allComments={comments}
                 />
