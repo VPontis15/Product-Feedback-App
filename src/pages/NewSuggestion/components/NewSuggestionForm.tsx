@@ -83,6 +83,15 @@ export default function NewSuggestionForm() {
     }));
   };
 
+  const handleReset = () => {
+    setFormData({
+      title: '',
+      category: '',
+      detail: '',
+    });
+    setSelectedCategory(null);
+  };
+
   // Fetch categories from the database
   const { data: categories } = useQuery({
     queryKey: ['categories'],
@@ -349,7 +358,7 @@ export default function NewSuggestionForm() {
           />
 
           <div>
-            <Button type="reset" variant="tertiary">
+            <Button type="reset" variant="tertiary" onClick={handleReset}>
               Cancel
             </Button>
             <Button type="submit" variant="primary">
