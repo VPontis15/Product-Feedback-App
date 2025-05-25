@@ -44,7 +44,7 @@ export default function SuggestionPage() {
     queryFn: async () => {
       try {
         const { data: suggestion, error } = await supabase
-          .from('feedback_with_comment_count')
+          .from('feedback_with_comments')
           .select(
             `
           *,
@@ -68,7 +68,7 @@ export default function SuggestionPage() {
   if (isLoading) {
     return (
       <StyledSuggestionPage>
-        <Header />
+        <Header slug={slug as string} />
         <Suggestion
           isLoading={true}
           suggestion={{
@@ -94,10 +94,9 @@ export default function SuggestionPage() {
   if (!suggestionData) {
     return <div>Suggestion not found</div>;
   }
-
   return (
     <StyledSuggestionPage>
-      <Header slug={slug as string} />
+      <Header slug={slug as string} feedbackUserId={suggestionData.user_id} />
       <Suggestion
         isSuggestionPage
         isLoading={false}
