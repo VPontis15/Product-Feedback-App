@@ -27,7 +27,7 @@ const GlobalStyle = createGlobalStyle`
 --color-white-hover:#F7F8FD;
 --color-red-hover:#E98888;
 --color-comment: #8594F8;
---color-comment-divider:#979797;
+--color-comment-divider:#647196;
 --color-skeleton: var(--color-comment-divider);
 --ff-primary: 'Jost', sans-serif;
 
