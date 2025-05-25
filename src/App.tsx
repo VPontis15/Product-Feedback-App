@@ -6,6 +6,9 @@ import SuggestionPage from './pages/Suggestion/SuggestionPage';
 import NewSuggestionPage from './pages/NewSuggestion/NewSuggestionPage';
 import RoadmapPage from './pages/Roadmap/RoadmapPage';
 import LoginPage from './pages/Login/LoginPage';
+import ProtectedRoute from './components/ProtectedRoute';
+import PublicRoute from './components/PublicRoute';
+import { AuthProvider } from './context/authContext';
 
 const GlobalStyle = createGlobalStyle`
 
@@ -86,25 +89,52 @@ h1, h2, h3, h4, h5, h6 {
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <Home />,
+    element: (
+      <ProtectedRoute>
+        <Home />
+      </ProtectedRoute>
+    ),
   },
   {
     path: 'feedback/:slug',
-    element: <SuggestionPage />,
+    element: (
+      <ProtectedRoute>
+        <SuggestionPage />
+      </ProtectedRoute>
+    ),
   },
   {
     path: 'feedback/new',
-    element: <NewSuggestionPage />,
+    element: (
+      <ProtectedRoute>
+        <NewSuggestionPage />
+      </ProtectedRoute>
+    ),
   },
   {
     path: 'feedback/:slug/edit',
-    element: <NewSuggestionPage />,
+    element: (
+      <ProtectedRoute>
+        <NewSuggestionPage />
+      </ProtectedRoute>
+    ),
   },
   {
     path: 'roadmap',
-    element: <RoadmapPage />,
+    element: (
+      <ProtectedRoute>
+        <RoadmapPage />
+      </ProtectedRoute>
+    ),
   },
-  { path: 'login', element: <LoginPage /> },
+  {
+    path: 'login',
+    element: (
+      <PublicRoute>
+        <LoginPage />
+      </PublicRoute>
+    ),
+  },
 ]);
 
 const queryClient = new QueryClient();
@@ -114,7 +144,9 @@ function App() {
     <>
       <GlobalStyle />
       <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router} />
+        <AuthProvider>
+          <RouterProvider router={router} />
+        </AuthProvider>
       </QueryClientProvider>
     </>
   );
