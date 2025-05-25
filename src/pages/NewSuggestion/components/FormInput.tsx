@@ -48,7 +48,7 @@ const FormGroup = styled.div`
 
 interface FormInputProps {
   label: string;
-  description: string;
+  description?: string;
   id: string;
   name: string;
   type?: string;
@@ -79,7 +79,7 @@ export default function FormInput({
     <FormGroup>
       <div>
         <label htmlFor={id}>{label}</label>
-        <p>{description}</p>
+        {description && <p>{description}</p>}
       </div>
       {!children &&
         (isTextarea ? (
