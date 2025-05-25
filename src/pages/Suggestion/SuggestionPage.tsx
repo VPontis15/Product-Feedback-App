@@ -97,7 +97,7 @@ export default function SuggestionPage() {
 
   return (
     <StyledSuggestionPage>
-      <Header />
+      <Header slug={slug as string} />
       <Suggestion
         isSuggestionPage
         isLoading={false}

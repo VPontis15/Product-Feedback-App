@@ -57,6 +57,7 @@ interface FormInputProps {
   rows?: number;
   children?: React.ReactNode;
   value?: string | number;
+  defaultValue?: string | number;
   onChange?: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
 }
 
@@ -72,6 +73,7 @@ export default function FormInput({
   children,
   value,
   onChange,
+  defaultValue = '',
 }: FormInputProps) {
   return (
     <FormGroup>
@@ -88,6 +90,7 @@ export default function FormInput({
             required={required}
             value={value}
             onChange={onChange}
+            defaultValue={defaultValue}
           />
         ) : (
           <input
@@ -97,6 +100,7 @@ export default function FormInput({
             required={required}
             value={value}
             onChange={onChange}
+            defaultValue={defaultValue}
           />
         ))}
       {children}
