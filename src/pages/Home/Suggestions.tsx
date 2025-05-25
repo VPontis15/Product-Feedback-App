@@ -68,7 +68,7 @@ export default function Suggestions() {
     queryFn: async () => {
       // Fetch all suggestions without any specific order
       const { data, error } = await supabase
-        .from('feedback_with_comment_count')
+        .from('feedback_with_comments')
         .select(
           `
           *,
