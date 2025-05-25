@@ -6,11 +6,11 @@ const SuggestionHeader = styled.header`
   justify-content: space-between;
   align-items: center;
 `;
-export default function Header() {
+export default function Header({ slug }: { slug: string }) {
   return (
     <SuggestionHeader>
       <GoBackBtn />
-      <Button variant="secondary" size="sm">
+      <Button to={`/feedback/${slug}/edit`} variant="secondary" size="sm">
         Edit Feedback
       </Button>
     </SuggestionHeader>
