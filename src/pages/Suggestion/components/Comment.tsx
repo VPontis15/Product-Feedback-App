@@ -3,6 +3,7 @@ import Button from '../../../components/Button';
 import Skeleton from '../../../components/Skeleton';
 import ReplyForm from './ReplyForm';
 import { useParams } from 'react-router';
+import { AnimatePresence } from 'framer-motion';
 
 interface CommentProps {
   isLoading?: boolean;
@@ -86,7 +87,7 @@ const Divider = styled.hr`
 const RepliesContainer = styled.div<{
   level?: number;
 }>`
-  margin-block-start: 2rem;
+  margin-block-start: 0.5rem;
   position: relative;
   display: grid;
   gap: 2rem;
@@ -192,34 +193,39 @@ export default function Comment({
       {/* Render replies with indentation */}
       {replies.length > 0 && (
         <RepliesContainer level={comment.parent_comment_id ? 1 : 0}>
-          {comment.id === replyId && (
-            <ReplyForm
-              feedback_id={comment.feedback_id}
-              parent_comment_id={comment.id as number}
-              slug={slug || ''}
-              onSuccess={() => onReplyClick?.(null)}
-            />
-          )}
-          {...replies.map((reply) => (
+          <AnimatePresence>
+            {comment.id === replyId && (
+              <ReplyForm
+                feedback_id={comment.feedback_id}
+                parent_comment_id={comment.id as number}
+                slug={slug || ''}
+                onSuccess={() => onReplyClick?.(null)}
+              />
+            )}
+          </AnimatePresence>
+          {replies.map((reply) => (
             <Comment
               onReplyClick={onReplyClick}
               replyId={replyId}
               key={reply.id}
               comment={reply}
               allComments={allComments}
+              level={1} // Add the level prop
             />
           ))}
         </RepliesContainer>
       )}
+      <AnimatePresence>
+        {!replies.length && comment.id === replyId && (
+          <ReplyForm
+            feedback_id={comment.feedback_id}
+            parent_comment_id={comment.id as number}
+            slug={slug || ''}
+            onSuccess={() => onReplyClick?.(null)}
+          />
+        )}
+      </AnimatePresence>
       {!comment.parent_comment_id && <Divider />}
-      {!replies.length && comment.id === replyId && (
-        <ReplyForm
-          feedback_id={comment.feedback_id}
-          parent_comment_id={comment.id as number}
-          slug={slug || ''}
-          onSuccess={() => onReplyClick?.(null)}
-        />
-      )}
     </>
   );
 }
