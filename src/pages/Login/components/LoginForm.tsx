@@ -3,6 +3,8 @@ import FormInput from '../../NewSuggestion/components/FormInput';
 import Button from '../../../components/Button';
 import { useState } from 'react';
 import { motion } from 'motion/react';
+import { useAuthContext } from '../../../context/authContext';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const FormContainer = styled.div`
   background-color: var(--color-white);
@@ -66,7 +68,13 @@ const FormHeader = styled.div`
     font-weight: 400;
   }
 `;
-
+const StyledButton = styled(Button)`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+`;
 const StyledForm = styled(motion.form)`
   display: flex;
   flex-direction: column;
@@ -213,15 +221,20 @@ const LoadingSpinner = styled.div`
     }
   }
 `;
-const userPassword = import.meta.env.VITE_TEST_USER_PASSWORD;
 
 export default function LoginForm() {
+  const { login, isLoginLoading, loginError } = useAuthContext();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [error, setError] = useState('');
   const [formData, setFormData] = useState({
     email: '',
     password: '',
   });
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
+
+  const from = location.state?.from?.pathname || '/';
+  const userPassword = import.meta.env.VITE_TEST_USER_PASSWORD;
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -236,45 +249,48 @@ export default function LoginForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
     setError('');
 
     // Basic validation
     if (!formData.email || !formData.password) {
       setError('Please fill in all fields');
-      setIsLoading(false);
       return;
     }
 
     if (!formData.email.includes('@')) {
       setError('Please enter a valid email address');
-      setIsLoading(false);
       return;
     }
 
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-
-      // For demo purposes, just show success
-      console.log('Login attempt:', formData);
-
-      // In a real app, you would handle successful login here
-      // For now, just show an alert
-      alert('Login successful! (This is a demo)');
-    } catch {
-      setError('Login failed. Please check your credentials and try again.');
-    } finally {
-      setIsLoading(false);
+      await login({
+        email: formData.email,
+        password: formData.password,
+      });
+      // Navigate after successful login
+      navigate(from, { replace: true });
+    } catch (err: any) {
+      setError(
+        err.message ||
+          'Login failed. Please check your credentials and try again.'
+      );
     }
   };
 
-  const handleDemoLogin = () => {
-    setFormData({
-      email: 'testuser@gmail.com',
-      password: userPassword,
-    });
+  const handleDemoLogin = async () => {
+    try {
+      await login({
+        email: 'testuser@gmail.com',
+        password: userPassword,
+      });
+      navigate(from, { replace: true });
+    } catch (err: any) {
+      setError(err.message || 'Demo login failed.');
+    }
   };
+
+  // Show login error from useAuth hook if it exists
+  const displayError = error || loginError?.message;
 
   return (
     <FormContainer>
@@ -289,13 +305,13 @@ export default function LoginForm() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        {error && (
+        {displayError && (
           <ErrorMessage
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.3 }}
           >
-            <p>{error}</p>
+            <p>{displayError}</p>
           </ErrorMessage>
         )}
 
@@ -324,21 +340,21 @@ export default function LoginForm() {
         </div>
 
         <div className="form-actions">
-          <Button
+          <StyledButton
             type="submit"
             variant="primary"
             size="lg"
-            disabled={isLoading}
+            disabled={isLoginLoading}
           >
-            {isLoading ? (
+            {isLoginLoading ? (
               <>
                 <LoadingSpinner />
-                Signing In...
+                <span>Signing In...</span>
               </>
             ) : (
               'Sign In'
             )}
-          </Button>
+          </StyledButton>
         </div>
 
         <div className="demo-login">
@@ -349,8 +365,9 @@ export default function LoginForm() {
             variant="secondary"
             size="base"
             onClick={handleDemoLogin}
+            disabled={isLoginLoading}
           >
-            Fill Demo Credentials
+            {isLoginLoading ? 'Logging in...' : 'Fill Demo Credentials'}
           </Button>
         </div>
       </StyledForm>
