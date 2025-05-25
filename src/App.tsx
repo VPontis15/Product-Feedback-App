@@ -96,6 +96,10 @@ const router = createBrowserRouter([
     element: <NewSuggestionPage />,
   },
   {
+    path: 'feedback/:slug/edit',
+    element: <NewSuggestionPage />,
+  },
+  {
     path: 'roadmap',
     element: <RoadmapPage />,
   },
