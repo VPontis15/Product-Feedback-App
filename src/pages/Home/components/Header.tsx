@@ -5,6 +5,8 @@ import backgroundHeaderMobile from '../../../assets/suggestions/mobile/backgroun
 import hamburgerIcon from '../../../assets/shared/mobile/icon-hamburger.svg';
 import closeMobileMenuIcon from '../../../assets/shared/mobile/icon-close.svg';
 import { preload } from 'react-dom';
+import { CiLogout } from 'react-icons/ci';
+import { useAuth } from '../../../hooks/useAuth';
 preload(backgroundHeader, {
   as: 'image',
   fetchPriority: 'high',
@@ -110,6 +112,39 @@ const SrOnly = styled.span`
   user-select: none;
 `;
 
+const LogoutButton = styled.button`
+  background: none;
+  border: none;
+  cursor: pointer;
+  position: absolute;
+  right: 1rem;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+const CiLogoutStyled = styled(CiLogout)`
+  width: 40px;
+  height: 40px;
+  color: var(--color-white);
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  cursor: pointer;
+  z-index: 100;
+
+  @media (max-width: 650px) {
+    width: 25px;
+    height: 25px;
+`;
+
+const HeaderWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  z-index: 1;
+`;
+
 interface HeaderProps {
   isOpen: boolean;
   handleIsOpen: (isOpen: boolean) => void;
@@ -118,6 +153,8 @@ export default function Header({ isOpen, handleIsOpen }: HeaderProps) {
   const handleClick = () => {
     handleIsOpen(!isOpen);
   };
+
+  const { user, logout } = useAuth();
   return (
     <StyledHeader>
       <picture>
@@ -130,7 +167,13 @@ export default function Header({ isOpen, handleIsOpen }: HeaderProps) {
           src={backgroundHeader}
         />
       </picture>
-      <div>
+      {user && (
+        <LogoutButton onClick={() => logout()}>
+          <CiLogoutStyled width={80} height={80} />
+        </LogoutButton>
+      )}
+
+      <HeaderWrapper>
         <StyledText>
           <h1>Frontend Mentor</h1>
           <p>Feedback Board</p>
@@ -144,7 +187,7 @@ export default function Header({ isOpen, handleIsOpen }: HeaderProps) {
             alt=""
           />
         </HamburgerButton>
-      </div>
+      </HeaderWrapper>
     </StyledHeader>
   );
 }
