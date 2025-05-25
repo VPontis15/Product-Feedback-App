@@ -8,19 +8,83 @@ interface AuthCredentials {
 
 interface SignUpData extends AuthCredentials {
   fullName?: string;
+  username?: string;
+}
+
+interface UserProfile {
+  id: string;
+  username: string;
+  first_name: string;
+  last_name: string;
+  avatar_url: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+interface AuthUser {
+  id: string;
+  email: string;
+  username?: string;
+  first_name?: string;
+  last_name?: string;
+  avatar_url?: string;
+  // ... other auth properties
 }
 
 export const useAuth = () => {
   const queryClient = useQueryClient();
 
-  // Get current user
+  // Get current user with profile data
   const { data: user, isLoading } = useQuery({
     queryKey: ['user'],
     queryFn: async () => {
       const {
-        data: { user },
+        data: { user: authUser },
       } = await supabase.auth.getUser();
-      return user;
+
+      if (!authUser) return null;
+
+      // Fetch user profile from your custom users table with explicit column selection
+      const { data: profile, error } = await supabase
+        .from('users')
+        .select(
+          `
+          id,
+          username,
+          first_name,
+          last_name,
+          avatar_image_url,
+          created_at,
+          updated_at
+        `
+        )
+        .eq('id', authUser.id)
+        .single();
+
+      if (error) {
+        console.error('Error fetching user profile:', error);
+        // Return auth user with basic info if profile fetch fails
+        return {
+          id: authUser.id,
+          email: authUser.email,
+          username: null,
+          first_name: null,
+          last_name: null,
+          avatar_url: null,
+        };
+      }
+
+      // Merge auth user with profile data
+      return {
+        id: authUser.id,
+        email: authUser.email,
+        username: profile.username,
+        first_name: profile.first_name,
+        last_name: profile.last_name,
+        avatar_url: profile.avatar_image_url,
+        created_at: profile.created_at,
+        updated_at: profile.updated_at,
+      };
     },
     staleTime: Infinity,
   });
@@ -34,7 +98,37 @@ export const useAuth = () => {
       });
       if (error) throw error;
       if (!data.user) throw new Error('No user returned');
-      return data;
+
+      // Fetch profile data after successful login
+      const { data: profile } = await supabase
+        .from('users')
+        .select(
+          `
+          id,
+          username,
+          first_name,
+          last_name,
+          avatar_url,
+          created_at,
+          updated_at
+        `
+        )
+        .eq('id', data.user.id)
+        .single();
+
+      return {
+        ...data,
+        user: {
+          id: data.user.id,
+          email: data.user.email,
+          username: profile?.username,
+          first_name: profile?.first_name,
+          last_name: profile?.last_name,
+          avatar_url: profile?.avatar_url,
+          created_at: profile?.created_at,
+          updated_at: profile?.updated_at,
+        },
+      };
     },
     onSuccess: (data) => {
       queryClient.setQueryData(['user'], data.user);
@@ -44,15 +138,16 @@ export const useAuth = () => {
     },
   });
 
-  // Signup mutation
+  // Signup mutation with profile creation
   const signupMutation = useMutation({
-    mutationFn: async ({ email, password, fullName }: SignUpData) => {
+    mutationFn: async ({ email, password, fullName, username }: SignUpData) => {
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
           data: {
             full_name: fullName,
+            username: username,
           },
         },
       });
@@ -60,7 +155,9 @@ export const useAuth = () => {
       return data;
     },
     onSuccess: (data) => {
-      queryClient.setQueryData(['user'], data.user);
+      // Note: For signup, the profile will be created by the trigger
+      // The user will be available after email confirmation
+      queryClient.invalidateQueries({ queryKey: ['user'] });
     },
   });
 
