@@ -1,9 +1,13 @@
 import styled from 'styled-components';
 import Button from '../../../components/Button';
 import Skeleton from '../../../components/Skeleton';
+import ReplyForm from './ReplyForm';
+import { useParams } from 'react-router';
 
 interface CommentProps {
   isLoading?: boolean;
+  replyId?: number | null;
+  onReplyClick?: (id: number | null) => void;
   comment: {
     id: number;
     comment: string;
@@ -76,16 +80,21 @@ const CommentContent = styled.div`
 const Divider = styled.hr`
   color: var(--color-comment-divider);
   margin: 2rem 0;
+  opacity: 0.1;
 `;
 
-const RepliesContainer = styled.div`
+const RepliesContainer = styled.div<{
+  level?: number;
+}>`
   margin-block-start: 2rem;
-  padding-inline-start: 2.5rem;
-  margin-inline-start: 2rem;
   position: relative;
   display: grid;
   gap: 2rem;
 
+  ${({ level }) =>
+    level === 0 &&
+    `
+  margin-inline-start: 2rem;
   &::before {
     content: '';
     position: absolute;
@@ -94,7 +103,8 @@ const RepliesContainer = styled.div`
     bottom: 0;
     width: 1px;
     background-color: var(--color-comment-divider);
-  }
+    opacity: 0.1;
+  }`}
 `;
 
 const SkeletonAvatar = styled(Skeleton)`
@@ -120,7 +130,22 @@ export default function Comment({
   comment,
   isLoading,
   allComments = [],
+  replyId,
+  onReplyClick,
 }: CommentProps) {
+  const { slug } = useParams<{ slug: string }>();
+
+  const { avatar_image_url, username, first_name, last_name } = comment.user;
+
+  // Find replies to this comment
+  const replies = allComments.filter(
+    (reply) => reply.parent_comment_id === comment.id
+  );
+
+  // Find parent comment's user if this is a reply
+  const parentUser = comment.parent_comment_id
+    ? allComments.find((c) => c.id === comment.parent_comment_id)?.user
+    : null;
   if (isLoading) {
     return (
       <SkeletonComment>
@@ -134,19 +159,6 @@ export default function Comment({
       </SkeletonComment>
     );
   }
-
-  const { avatar_image_url, username, first_name, last_name } = comment.user;
-
-  // Find replies to this comment
-  const replies = allComments.filter(
-    (reply) => reply.parent_comment_id === comment.id
-  );
-
-  // Find parent comment's user if this is a reply
-  const parentUser = comment.parent_comment_id
-    ? allComments.find((c) => c.id === comment.parent_comment_id)?.user
-    : null;
-
   return (
     <>
       <CommentWrapper>
@@ -161,7 +173,9 @@ export default function Comment({
               <span>@{username}</span>
             </div>
             <ButtonWrapper>
-              <Button variant="text">Reply</Button>
+              <Button onClick={() => onReplyClick?.(comment.id)} variant="text">
+                Reply
+              </Button>
             </ButtonWrapper>
           </CommentDetailsWrapper>
           <p>
@@ -177,13 +191,35 @@ export default function Comment({
 
       {/* Render replies with indentation */}
       {replies.length > 0 && (
-        <RepliesContainer>
+        <RepliesContainer level={comment.parent_comment_id ? 1 : 0}>
+          {comment.id === replyId && (
+            <ReplyForm
+              feedback_id={comment.feedback_id}
+              parent_comment_id={comment.id as number}
+              slug={slug || ''}
+              onSuccess={() => onReplyClick?.(null)}
+            />
+          )}
           {...replies.map((reply) => (
-            <Comment key={reply.id} comment={reply} allComments={allComments} />
+            <Comment
+              onReplyClick={onReplyClick}
+              replyId={replyId}
+              key={reply.id}
+              comment={reply}
+              allComments={allComments}
+            />
           ))}
         </RepliesContainer>
       )}
-      {replies.length > 0 && <Divider />}
+      {!comment.parent_comment_id && <Divider />}
+      {!replies.length && comment.id === replyId && (
+        <ReplyForm
+          feedback_id={comment.feedback_id}
+          parent_comment_id={comment.id as number}
+          slug={slug || ''}
+          onSuccess={() => onReplyClick?.(null)}
+        />
+      )}
     </>
   );
 }
