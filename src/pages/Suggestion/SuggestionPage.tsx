@@ -94,7 +94,7 @@ export default function SuggestionPage() {
       <Suspense fallback={<Loader />}>
         <CommentSection suggestionId={suggestionData.id} />
       </Suspense>
-      <CommentForm />
+      <CommentForm slug={slug as string} />
     </StyledSuggestionPage>
   );
 }
