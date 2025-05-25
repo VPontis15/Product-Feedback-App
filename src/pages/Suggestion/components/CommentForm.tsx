@@ -81,7 +81,6 @@ export default function CommentForm({ slug }: { slug: string }) {
   const [charactersLeft, setCharactersLeft] = useState(COMMENT_MAX_LENGTH);
   const [comment, setComment] = useState('');
   const [error, setError] = useState<string | null>(null);
-
   const { data: feedback_id } = useQuery({
     queryKey: ['feedbackId', slug],
     queryFn: async () => {
