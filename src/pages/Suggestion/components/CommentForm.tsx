@@ -2,13 +2,9 @@ import styled from 'styled-components';
 import Button from '../../../components/Button';
 import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import {
-  queryOptions,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import supabase from '../../../api/supabase';
+import { useAddComment } from '../../../hooks/useAddComment';
 
 const StyledCommentForm = styled.div<{
   error: boolean;
@@ -85,21 +81,6 @@ export default function CommentForm({ slug }: { slug: string }) {
   const [charactersLeft, setCharactersLeft] = useState(COMMENT_MAX_LENGTH);
   const [comment, setComment] = useState('');
   const [error, setError] = useState<string | null>(null);
-  const queryClient = useQueryClient();
-  const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const value = e.target.value;
-    const remainingChars = COMMENT_MAX_LENGTH - value.length;
-    setCharactersLeft(Math.max(0, remainingChars));
-    setComment(value);
-
-    if (value.length >= COMMENT_MAX_LENGTH) {
-      setError(
-        `Comment reached the maximum length of ${COMMENT_MAX_LENGTH} characters`
-      );
-    } else {
-      setError(null);
-    }
-  };
 
   const { data: feedback_id } = useQuery({
     queryKey: ['feedbackId', slug],
@@ -125,46 +106,30 @@ export default function CommentForm({ slug }: { slug: string }) {
     refetchOnWindowFocus: false,
   });
 
-  const { mutate: addComment, error: insertionError } = useMutation({
-    mutationFn: async () => {
-      try {
-        if (
-          comment.length === 0 ||
-          comment.length > COMMENT_MAX_LENGTH ||
-          !feedback_id
-        ) {
-          throw new Error(
-            `Comment must be between 1 and ${COMMENT_MAX_LENGTH} characters long`
-          );
-        }
-        const { data, error } = await supabase
-          .from('comment')
-          .insert({ comment, feedback_id, user_id: 2, parent_comment_id: 8 })
-          .select();
-        if (error) {
-          throw new Error(error.message || 'Failed to add comment');
-        }
-        return data;
-      } catch (error) {
-        console.error('Error adding comment:', error);
-        throw error; // Re-throw to let React Query handle it
-      }
-    },
+  const { mutate: addComment, error: insertionError } = useAddComment({
+    feedback_id,
+    slug,
     onSuccess: () => {
       setComment('');
       setCharactersLeft(COMMENT_MAX_LENGTH);
       setError(null);
-      queryClient.invalidateQueries({
-        queryKey: ['suggestion', slug],
-      });
-      queryClient.invalidateQueries({
-        queryKey: ['suggestion-comment', feedback_id],
-      });
-      queryClient.invalidateQueries({
-        queryKey: ['suggestions'],
-      });
     },
   });
+
+  const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const value = e.target.value;
+    const remainingChars = COMMENT_MAX_LENGTH - value.length;
+    setCharactersLeft(Math.max(0, remainingChars));
+    setComment(value);
+
+    if (value.length >= COMMENT_MAX_LENGTH) {
+      setError(
+        `Comment reached the maximum length of ${COMMENT_MAX_LENGTH} characters`
+      );
+    } else {
+      setError(null);
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -174,7 +139,7 @@ export default function CommentForm({ slug }: { slug: string }) {
       );
       return;
     }
-    addComment();
+    addComment({ comment });
   };
 
   return (
