@@ -8,6 +8,7 @@ import { AnimatePresence } from 'framer-motion';
 interface CommentProps {
   isLoading?: boolean;
   replyId?: number | null;
+  level?: number; // For nested replies
   onReplyClick?: (id: number | null) => void;
   comment: {
     id: number;
@@ -210,7 +211,7 @@ export default function Comment({
               key={reply.id}
               comment={reply}
               allComments={allComments}
-              level={1} // Add the level prop
+              level={1}
             />
           ))}
         </RepliesContainer>
