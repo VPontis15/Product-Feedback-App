@@ -57,6 +57,7 @@ const UserDetailsWrapper = styled.div`
 `;
 export default function Comment({ user, comment }: CommentProps) {
   const { name, image, username } = user;
+
   return (
     <CommentWrapper>
       <Avatar src={image} alt={name} />
