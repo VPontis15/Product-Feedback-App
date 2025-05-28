@@ -4,6 +4,9 @@ import Button from '../../../components/Button';
 import { Link } from 'react-router';
 import Skeleton from '../../../components/Skeleton';
 import CommentLogo from '../../../components/CommentLogo';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { supabase } from '../../../lib/supabase';
+import { useAuth } from '../../../hooks/useAuth';
 
 // Update the interface to match the Supabase response structure
 interface SuggestionProps {
@@ -20,7 +23,7 @@ interface SuggestionProps {
     status: {
       update_status: string;
     };
-    upvotes: number;
+    like_count?: number;
     comment_count?: number;
     comment: [
       {
@@ -56,9 +59,19 @@ const Likes = styled.button`
   border: none;
   border-radius: var(--btn-radius);
   background-color: var(--color-like);
-  padding-inline: .5rem;
+  padding-inline: 0.5rem;
   padding-block: 0.5rem 0.5rem;
   cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: var(--color-blue-light);
+  }
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
 
   span {
     color: var(--color-dark-blue);
@@ -68,13 +81,14 @@ const Likes = styled.button`
   }
 
   @media (max-width: 550px) {
-  grid-row:2;
-  flex-direction: row;
-  justify-self: start;
-  width:4.3125rem;
-  vertical-align: middle;
-  padding-block: .469rem;
-  margin-top:1rem;
+    grid-row: 2;
+    flex-direction: row;
+    justify-self: start;
+    width: 4.3125rem;
+    vertical-align: middle;
+    padding-block: 0.469rem;
+    margin-top: 1rem;
+  }
 `;
 
 const CommentsWrapper = styled.div`
@@ -101,9 +115,9 @@ const CommentsWrapper = styled.div`
   }
 
   @media (max-width: 550px) {
-  grid-row:2;
-    margin-top:1rem;
-
+    grid-row: 2;
+    margin-top: 1rem;
+  }
 `;
 
 const SuggestionDetailsWrapper = styled.div`
@@ -184,6 +198,112 @@ export default function Suggestion({
   isSuggestionPage = false,
   isLoading,
 }: SuggestionProps) {
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
+  const { title, slug, description, category } = suggestion;
+  const commentsCount = suggestion.comment_count || 0;
+  const likesCount = suggestion.like_count || 0;
+  const { data: userLiked = false } = useQuery({
+    queryKey: ['userLiked', suggestion.id, user?.id],
+    queryFn: async () => {
+      if (!user?.id) return false;
+
+      console.log('Checking like status for:', {
+        feedback_id: suggestion.id,
+        user_id: user.id,
+      });
+
+      // First, let's try a simpler query to see if the table is accessible
+      const { error: allLikesError } = await supabase
+        .from('likes')
+        .select('*')
+        .limit(1);
+
+      if (allLikesError) {
+        console.error('Error accessing likes table:', allLikesError);
+        return false;
+      }
+
+      const { data: userLiked, error } = await supabase
+        .from('likes')
+        .select('id')
+        .eq('feedback_id', suggestion.id)
+        .eq('user_id', user.id)
+        .maybeSingle(); // Use maybeSingle instead of single to avoid errors when no rows found
+
+      if (error) {
+        console.error('Error fetching user liked status:', error);
+        return false;
+      }
+
+      return !!userLiked;
+    },
+    enabled: !!user?.id,
+    retry: 1, // Reduce retries to avoid spam
+  });
+  const likeMutation = useMutation({
+    mutationFn: async ({ isLiking }: { isLiking: boolean }) => {
+      if (!user?.id) throw new Error('User not authenticated');
+
+      console.log('Like mutation:', {
+        isLiking,
+        feedback_id: suggestion.id,
+        user_id: user.id,
+      });
+
+      if (isLiking) {
+        const { data, error } = await supabase
+          .from('likes')
+          .insert({ feedback_id: suggestion.id, user_id: user.id })
+          .select();
+
+        if (error) {
+          console.error('Insert error:', error);
+          throw error;
+        }
+        console.log('Successfully inserted like:', data);
+      } else {
+        const { data, error } = await supabase
+          .from('likes')
+          .delete()
+          .eq('feedback_id', suggestion.id)
+          .eq('user_id', user.id)
+          .select();
+
+        if (error) {
+          console.error('Delete error:', error);
+          throw error;
+        }
+        console.log('Successfully deleted like:', data);
+      }
+    },
+    onSuccess: () => {
+      console.log('Like mutation successful, invalidating queries...');
+      // Invalidate the user liked status
+      queryClient.invalidateQueries({
+        queryKey: ['userLiked', suggestion.id, user?.id],
+      });
+      // Invalidate the suggestions list (for home page)
+      queryClient.invalidateQueries({ queryKey: ['suggestions'] });
+      // Invalidate the individual suggestion query (for suggestion page)
+      queryClient.invalidateQueries({
+        queryKey: ['suggestion', suggestion.slug],
+      });
+    },
+    onError: (error) => {
+      console.error('Error toggling like:', error);
+    },
+  });
+
+  const handleLikeClick = () => {
+    if (!user) {
+      // You might want to show a login prompt or redirect to login
+      console.log('Please log in to like suggestions');
+      return;
+    }
+
+    likeMutation.mutate({ isLiking: !userLiked });
+  };
   if (isLoading) {
     return (
       <SuggestionWrapper>
@@ -203,13 +323,26 @@ export default function Suggestion({
     );
   }
 
-  const { title, slug, description, category, upvotes } = suggestion;
-  const commentsCount = suggestion.comment_count || 0;
   return (
     <SuggestionWrapper>
-      <Likes>
-        <img src={arrowUp} alt="" />
-        <span>{upvotes}</span>
+      {' '}
+      <Likes
+        onClick={handleLikeClick}
+        disabled={likeMutation.isPending}
+        style={{
+          backgroundColor: userLiked
+            ? 'var(--color-blue)'
+            : 'var(--color-like)',
+        }}
+      >
+        <img
+          src={arrowUp}
+          alt=""
+          style={{ filter: userLiked ? 'brightness(0) invert(1)' : 'none' }}
+        />
+        <span style={{ color: userLiked ? 'white' : 'var(--color-dark-blue)' }}>
+          {likeMutation.isPending ? '...' : likesCount}
+        </span>
       </Likes>
       <SuggestionContent>
         <SuggestionDetailsWrapper>
@@ -225,7 +358,7 @@ export default function Suggestion({
         <Button variant="filter" size="sm">
           {category?.category || 'No Category'}
         </Button>
-      </SuggestionContent>
+      </SuggestionContent>{' '}
       <CommentsWrapper>
         <CommentLogo amount={commentsCount} />
       </CommentsWrapper>
