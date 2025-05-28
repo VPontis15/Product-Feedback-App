@@ -245,12 +245,6 @@ export default function Suggestion({
     mutationFn: async ({ isLiking }: { isLiking: boolean }) => {
       if (!user?.id) throw new Error('User not authenticated');
 
-      console.log('Like mutation:', {
-        isLiking,
-        feedback_id: suggestion.id,
-        user_id: user.id,
-      });
-
       if (isLiking) {
         const { data, error } = await supabase
           .from('likes')
@@ -261,7 +255,6 @@ export default function Suggestion({
           console.error('Insert error:', error);
           throw error;
         }
-        console.log('Successfully inserted like:', data);
       } else {
         const { data, error } = await supabase
           .from('likes')
@@ -278,7 +271,6 @@ export default function Suggestion({
       }
     },
     onSuccess: () => {
-      console.log('Like mutation successful, invalidating queries...');
       // Invalidate the user liked status
       queryClient.invalidateQueries({
         queryKey: ['userLiked', suggestion.id, user?.id],
@@ -297,8 +289,6 @@ export default function Suggestion({
 
   const handleLikeClick = () => {
     if (!user) {
-      // You might want to show a login prompt or redirect to login
-      console.log('Please log in to like suggestions');
       return;
     }
 
