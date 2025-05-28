@@ -68,7 +68,7 @@ export default function Suggestions() {
     queryFn: async () => {
       // Fetch all suggestions without any specific order
       const { data, error } = await supabase
-        .from('feedback_with_comments')
+        .from('feedback_with_comments_and_likes')
         .select(
           `
           *,
@@ -100,12 +100,13 @@ export default function Suggestions() {
     // Then, sort the filtered results
     const currentSortOption =
       SORT_OPTIONS.find((option) => option.value === sortBy) || SORT_OPTIONS[0];
-
     return [...filtered].sort((a, b) => {
-      if (currentSortOption.column === 'upvotes') {
+      if (currentSortOption.column === 'like_count') {
+        const aLikes = a.like_count || 0;
+        const bLikes = b.like_count || 0;
         return currentSortOption.order === 'asc'
-          ? a.upvotes - b.upvotes
-          : b.upvotes - a.upvotes;
+          ? aLikes - bLikes
+          : bLikes - aLikes;
       } else if (currentSortOption.column === 'comment_count') {
         const aComments = a.comment_count || 0;
         const bComments = b.comment_count || 0;
