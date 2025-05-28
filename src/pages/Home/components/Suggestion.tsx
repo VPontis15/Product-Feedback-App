@@ -4,9 +4,7 @@ import Button from '../../../components/Button';
 import { Link } from 'react-router';
 import Skeleton from '../../../components/Skeleton';
 import CommentLogo from '../../../components/CommentLogo';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '../../../lib/supabase';
-import { useAuth } from '../../../hooks/useAuth';
+import { useLikeMutation } from '../../../hooks/useLikeMutation';
 
 // Update the interface to match the Supabase response structure
 interface SuggestionProps {
@@ -198,102 +196,18 @@ export default function Suggestion({
   isSuggestionPage = false,
   isLoading,
 }: SuggestionProps) {
-  const { user } = useAuth();
-  const queryClient = useQueryClient();
   const { title, slug, description, category } = suggestion;
   const commentsCount = suggestion.comment_count || 0;
   const likesCount = suggestion.like_count || 0;
-  const { data: userLiked = false } = useQuery({
-    queryKey: ['userLiked', suggestion.id, user?.id],
-    queryFn: async () => {
-      if (!user?.id) return false;
 
-      console.log('Checking like status for:', {
-        feedback_id: suggestion.id,
-        user_id: user.id,
-      });
-
-      // First, let's try a simpler query to see if the table is accessible
-      const { error: allLikesError } = await supabase
-        .from('likes')
-        .select('*')
-        .limit(1);
-
-      if (allLikesError) {
-        console.error('Error accessing likes table:', allLikesError);
-        return false;
-      }
-
-      const { data: userLiked, error } = await supabase
-        .from('likes')
-        .select('id')
-        .eq('feedback_id', suggestion.id)
-        .eq('user_id', user.id)
-        .maybeSingle(); // Use maybeSingle instead of single to avoid errors when no rows found
-
-      if (error) {
-        console.error('Error fetching user liked status:', error);
-        return false;
-      }
-
-      return !!userLiked;
-    },
-    enabled: !!user?.id,
-    retry: 1, // Reduce retries to avoid spam
+  const {
+    userLiked,
+    handleLikeClick,
+    isLoading: isLikeLoading,
+  } = useLikeMutation({
+    suggestionId: suggestion.id,
+    suggestionSlug: suggestion.slug,
   });
-  const likeMutation = useMutation({
-    mutationFn: async ({ isLiking }: { isLiking: boolean }) => {
-      if (!user?.id) throw new Error('User not authenticated');
-
-      if (isLiking) {
-        const { data, error } = await supabase
-          .from('likes')
-          .insert({ feedback_id: suggestion.id, user_id: user.id })
-          .select();
-
-        if (error) {
-          console.error('Insert error:', error);
-          throw error;
-        }
-      } else {
-        const { data, error } = await supabase
-          .from('likes')
-          .delete()
-          .eq('feedback_id', suggestion.id)
-          .eq('user_id', user.id)
-          .select();
-
-        if (error) {
-          console.error('Delete error:', error);
-          throw error;
-        }
-        console.log('Successfully deleted like:', data);
-      }
-    },
-    onSuccess: () => {
-      // Invalidate the user liked status
-      queryClient.invalidateQueries({
-        queryKey: ['userLiked', suggestion.id, user?.id],
-      });
-      // Invalidate the suggestions list (for home page)
-      queryClient.invalidateQueries({ queryKey: ['suggestions'] });
-      // Invalidate the individual suggestion query (for suggestion page)
-      queryClient.invalidateQueries({
-        queryKey: ['suggestion', suggestion.slug],
-      });
-    },
-    onError: (error) => {
-      console.error('Error toggling like:', error);
-    },
-  });
-
-  const handleLikeClick = () => {
-    if (!user) {
-      return;
-    }
-
-    likeMutation.mutate({ isLiking: !userLiked });
-  };
   if (isLoading) {
     return (
       <SuggestionWrapper>
@@ -318,7 +232,7 @@ export default function Suggestion({
       {' '}
       <Likes
         onClick={handleLikeClick}
-        disabled={likeMutation.isPending}
+        disabled={isLikeLoading}
         style={{
           backgroundColor: userLiked
             ? 'var(--color-blue)'
@@ -331,7 +245,7 @@ export default function Suggestion({
           style={{ filter: userLiked ? 'brightness(0) invert(1)' : 'none' }}
         />
         <span style={{ color: userLiked ? 'white' : 'var(--color-dark-blue)' }}>
-          {likeMutation.isPending ? '...' : likesCount}
+          {isLikeLoading ? '...' : likesCount}
         </span>
       </Likes>
       <SuggestionContent>
