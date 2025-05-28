@@ -16,7 +16,7 @@ export enum SortOptionValue {
 interface SortOption {
   value: SortOptionValue;
   label: string;
-  column: 'upvotes' | 'comment_count';
+  column: 'upvotes' | 'comment_count' | 'like_count';
   order: 'asc' | 'desc';
 }
 
@@ -24,14 +24,14 @@ interface SortOption {
 export const SORT_OPTIONS: SortOption[] = [
   {
     value: SortOptionValue.MOST_UPVOTES,
-    label: 'Most Upvotes',
-    column: 'upvotes',
+    label: 'Most Likes',
+    column: 'like_count',
     order: 'desc',
   },
   {
     value: SortOptionValue.LEAST_UPVOTES,
-    label: 'Least Upvotes',
-    column: 'upvotes',
+    label: 'Least Likes',
+    column: 'like_count',
     order: 'asc',
   },
   {
