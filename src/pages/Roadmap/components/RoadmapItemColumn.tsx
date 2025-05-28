@@ -31,11 +31,10 @@ export default function RoadmapItemColumn({
     queryFn: async () => {
       try {
         const { data, error } = await supabase
-          .from('feedback')
+          .from('feedback_with_comments_and_likes')
           .select(
             `*,
             status!inner(update_status),
-            comment(count),
             category!inner(category)`
           )
           .eq('status.update_status', title);

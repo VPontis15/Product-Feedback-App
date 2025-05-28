@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { Link } from 'react-router';
 import Button from '../../../components/Button';
-import UpVotesBtn from '../../../components/Upvotes';
+import LikesButton from '../../../components/LikesButton';
 import CommentLogo from '../../../components/CommentLogo';
 
 const StyledRoadmapItem = styled.article<{ color: string }>`
@@ -81,20 +81,26 @@ export interface RoadmapItemProps {
     category: {
       category: string;
     };
-    upvotes: number;
-    comment: [
-      {
-        count: number;
-      }
-    ];
+    like_count?: number;
+    comment_count?: number;
     slug: string;
   };
   color: string;
 }
 
 export default function RoadmapItem({ feedback, color }: RoadmapItemProps) {
-  const { id, title, slug, description, status, category, upvotes, comment } =
-    feedback;
+  const {
+    id,
+    title,
+    slug,
+    description,
+    status,
+    category,
+    like_count,
+    comment_count,
+  } = feedback;
+  const likesCount = like_count || 0;
+  const commentsCount = comment_count || 0;
 
   return (
     <StyledRoadmapItem color={color}>
@@ -113,16 +119,15 @@ export default function RoadmapItem({ feedback, color }: RoadmapItemProps) {
         </div>
         <Button size="sm" variant="filter">
           {category.category}
-        </Button>
+        </Button>{' '}
         <ButtonsWrapper>
-          <UpVotesBtn
+          <LikesButton
+            suggestionId={id}
+            suggestionSlug={slug}
+            likeCount={likesCount}
             layout="horizontal"
-            upvotes={upvotes}
-            onClick={() => {
-              console.log('Upvoted!');
-            }}
           />
-          <CommentLogo amount={comment[0].count} />
+          <CommentLogo amount={commentsCount} />
         </ButtonsWrapper>
       </RoadmapItemContent>
     </StyledRoadmapItem>

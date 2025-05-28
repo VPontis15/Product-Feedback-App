@@ -51,13 +51,12 @@ export default function RoadmapContentWrapperMobile({
     queryFn: async () => {
       try {
         const { data, error } = await supabase
-          .from('feedback')
+          .from('feedback_with_comments_and_likes')
           .select(
             `
             *,
-            status:update_status_id(update_status,color,description),
-            category:category_id(category),
-            comment(count)
+            status!inner(update_status, color, description),
+            category!inner(category)
           `
           )
           .eq('update_status_id', selectedStatus);
