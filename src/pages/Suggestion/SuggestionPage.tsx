@@ -9,18 +9,6 @@ const CommentSection = lazy(() => import('./components/CommentSection'));
 import CommentForm from './components/CommentForm';
 import Loader from '../../components/Loader';
 
-interface SuggestionData {
-  id: string;
-  title: string;
-  description: string;
-  slug: string;
-  category: { category: string };
-  status: { update_status: string };
-  comment: { count: number }[];
-  upvotes: number;
-  created_at: string;
-}
-
 const StyledSuggestionPage = styled.main`
   display: flex;
   flex-direction: column;
@@ -44,7 +32,7 @@ export default function SuggestionPage() {
     queryFn: async () => {
       try {
         const { data: suggestion, error } = await supabase
-          .from('feedback_with_comments')
+          .from('feedback_with_comments_and_likes')
           .select(
             `
           *,
@@ -79,7 +67,7 @@ export default function SuggestionPage() {
             category: { category: '' },
             status: { update_status: '' },
             comment: [{ count: 0 }],
-            upvotes: 0,
+            like_count: 0,
           }}
         />
         {/* Don't render CommentSection during loading or pass a safe default */}
