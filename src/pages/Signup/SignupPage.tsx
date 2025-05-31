@@ -147,7 +147,10 @@ export default function SignupPage() {
           transition={{ duration: 0.6, delay: 0.2 }}
         >
           <h1>Join Product Feedback</h1>
-          <p>Create an account and help shape the future of our products with your valuable insights</p>
+          <p>
+            Create an account and help shape the future of our products with
+            your valuable insights
+          </p>
         </BrandSection>
 
         <motion.div

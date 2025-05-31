@@ -477,10 +477,12 @@ export default function SignupForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    setSuccess('');    if (!validateForm()) {
+    setSuccess('');
+    if (!validateForm()) {
       setError('Please fix the errors below');
       return;
-    }    try {
+    }
+    try {
       await signup({
         email: formData.email,
         password: formData.password,
@@ -492,11 +494,10 @@ export default function SignupForm() {
 
       setSuccess(
         'Account created successfully! Please check your email to verify your account.'
-      );// Optionally navigate after a delay
+      ); // Optionally navigate after a delay
       setTimeout(() => {
         navigate('/login', { replace: true });
       }, 2000);
-
     } catch (err) {
       setError(
         err instanceof Error ? err.message : 'Signup failed. Please try again.'
