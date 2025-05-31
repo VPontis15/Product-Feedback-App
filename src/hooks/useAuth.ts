@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../lib/supabase';
+import { uploadProfileImage } from '../lib/storageHelper';
 
 interface AuthCredentials {
   email: string;
@@ -126,16 +127,19 @@ export const useAuth = () => {
       lastName,
       username,
       avatar,
-    }: SignUpData) => {
-      // Check if username is taken first
+    }: SignUpData) => {      // Check if username is taken first
       if (username) {
-        const { data: existingUser, error: checkError } = await supabase
+        const { data: existingUsers, error: checkError } = await supabase
           .from('users')
           .select('username')
-          .eq('username', username)
-          .single();
+          .eq('username', username);
 
-        if (existingUser && !checkError) {
+        if (checkError) {
+          console.error('Error checking username:', checkError);
+          throw new Error('Failed to check username availability');
+        }
+
+        if (existingUsers && existingUsers.length > 0) {
           throw new Error(
             'Username is already taken. Please choose another one.'
           );
@@ -190,74 +194,29 @@ export const useAuth = () => {
           }
         }
       } catch (profileError) {
-        console.error('Error creating user profile:', profileError);
-      } // Handle avatar upload if provided
+        console.error('Error creating user profile:', profileError);      } // Handle avatar upload if provided
       if (avatar) {
-        console.log('Starting avatar upload process...', {
-          fileName: avatar.name,
-          fileSize: avatar.size,
-          fileType: avatar.type,
-          userId: data.user.id,
-        });
+        console.log('Starting avatar upload process...');
         try {
-          const fileExt = avatar.name.split('.').pop();
-          const fileName = `${data.user.id}.${fileExt}`;
+          const avatarUrl = await uploadProfileImage({
+            userId: data.user.id,
+            file: avatar,
+          });          // Update the user's profile with the avatar URL
+          const { error: updateError } = await supabase
+            .from('users')
+            .update({ avatar_image_url: avatarUrl })
+            .eq('id', data.user.id);
 
-          console.log(
-            'Uploading to bucket "profile-images" with filename:',
-            fileName
-          );
-
-          // Try uploading without any folder structure first
-          const { data: uploadData, error: uploadError } =
-            await supabase.storage
-              .from('profile-images')
-              .upload(fileName, avatar, { upsert: true });
-
-          console.log('Upload result:', { uploadData, uploadError });
-
-          if (uploadError) {
-            console.error('Error uploading avatar:', uploadError);
-            throw new Error(`Failed to upload avatar: ${uploadError.message}`);
+          if (updateError) {
+            console.error(
+              'Error updating user profile with avatar URL:',
+              updateError
+            );
+            throw new Error(
+              `Failed to update profile with avatar URL: ${updateError.message}`
+            );
           } else {
-            console.log('Avatar uploaded successfully, getting public URL...');
-            // Get the public URL for the uploaded avatar
-            const { data: publicUrlData } = await supabase.storage
-              .from('profile-images')
-              .getPublicUrl(fileName);
-
-            console.log('Public URL data:', publicUrlData);
-
-            if (publicUrlData?.publicUrl) {
-              console.log(
-                'Updating user profile with avatar URL:',
-                publicUrlData.publicUrl
-              );
-              // Update the user's profile with the avatar URL
-              const { data: updateData, error: updateError } = await supabase
-                .from('users')
-                .update({ avatar_image_url: publicUrlData.publicUrl })
-                .eq('id', data.user.id);
-
-              console.log('Profile update result:', {
-                updateData,
-                updateError,
-              });
-
-              if (updateError) {
-                console.error(
-                  'Error updating user profile with avatar URL:',
-                  updateError
-                );
-                throw new Error(
-                  `Failed to update profile with avatar URL: ${updateError.message}`
-                );
-              } else {
-                console.log('Avatar URL updated in user profile successfully');
-              }
-            } else {
-              console.error('No public URL returned from getPublicUrl');
-            }
+            console.log('Avatar URL updated in user profile successfully');
           }
         } catch (error) {
           console.error('Error handling avatar upload:', error);
