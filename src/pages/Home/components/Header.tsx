@@ -117,7 +117,7 @@ const LogoutButton = styled.button`
   border: none;
   cursor: pointer;
   position: absolute;
-  right: 1rem;
+  right: 0.125rem;
   top: 0;
   display: flex;
   align-items: center;
