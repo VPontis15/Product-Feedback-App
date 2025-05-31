@@ -20,11 +20,6 @@ export function useLikeMutation({
     queryFn: async () => {
       if (!user?.id) return false;
 
-      console.log('Checking like status for:', {
-        feedback_id: suggestionId,
-        user_id: user.id,
-      });
-
       // First, let's try a simpler query to see if the table is accessible
       const { error: allLikesError } = await supabase
         .from('likes')
