@@ -7,28 +7,11 @@ interface AuthCredentials {
 }
 
 interface SignUpData extends AuthCredentials {
-  fullName?: string;
+  fullName?: string; // Keeping for backward compatibility
+  firstName?: string;
+  lastName?: string;
   username?: string;
-}
-
-interface UserProfile {
-  id: string;
-  username: string;
-  first_name: string;
-  last_name: string;
-  avatar_url: string;
-  created_at?: string;
-  updated_at?: string;
-}
-
-interface AuthUser {
-  id: string;
-  email: string;
-  username?: string;
-  first_name?: string;
-  last_name?: string;
-  avatar_url?: string;
-  // ... other auth properties
+  avatar?: File | null;
 }
 
 export const useAuth = () => {
@@ -97,9 +80,7 @@ export const useAuth = () => {
         password,
       });
       if (error) throw error;
-      if (!data.user) throw new Error('No user returned');
-
-      // Fetch profile data after successful login
+      if (!data.user) throw new Error('No user returned'); // Fetch profile data after successful login
       const { data: profile } = await supabase
         .from('users')
         .select(
@@ -108,7 +89,7 @@ export const useAuth = () => {
           username,
           first_name,
           last_name,
-          avatar_url,
+          avatar_image_url,
           created_at,
           updated_at
         `
@@ -124,7 +105,7 @@ export const useAuth = () => {
           username: profile?.username,
           first_name: profile?.first_name,
           last_name: profile?.last_name,
-          avatar_url: profile?.avatar_url,
+          avatar_url: profile?.avatar_image_url,
           created_at: profile?.created_at,
           updated_at: profile?.updated_at,
         },
@@ -133,30 +114,152 @@ export const useAuth = () => {
     onSuccess: (data) => {
       queryClient.setQueryData(['user'], data.user);
     },
-    onError: (error) => {
+    onError: () => {
       queryClient.setQueryData(['user'], null);
     },
-  });
-
-  // Signup mutation with profile creation
+  }); // Signup mutation with profile creation
   const signupMutation = useMutation({
-    mutationFn: async ({ email, password, fullName, username }: SignUpData) => {
+    mutationFn: async ({
+      email,
+      password,
+      firstName,
+      lastName,
+      username,
+      avatar,
+    }: SignUpData) => {
+      // Check if username is taken first
+      if (username) {
+        const { data: existingUser, error: checkError } = await supabase
+          .from('users')
+          .select('username')
+          .eq('username', username)
+          .single();
+
+        if (existingUser && !checkError) {
+          throw new Error(
+            'Username is already taken. Please choose another one.'
+          );
+        }
+      }
+
+      // Sign up the user with metadata
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
           data: {
-            full_name: fullName,
-            username: username,
+            first_name: firstName || '',
+            last_name: lastName || '',
+            username: username || email.split('@')[0],
           },
         },
       });
+
       if (error) throw error;
+      if (!data.user) throw new Error('No user returned from signup');
+
+      // Wait a bit for the trigger to create the profile
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      // Try to create/update the user profile explicitly
+      try {
+        const profileData = {
+          id: data.user.id,
+          username: username || email.split('@')[0],
+          first_name: firstName || '',
+          last_name: lastName || '',
+          updated_at: new Date().toISOString(),
+        };
+
+        const { error: upsertError } = await supabase
+          .from('users')
+          .upsert(profileData, {
+            onConflict: 'id',
+            ignoreDuplicates: false,
+          });
+
+        if (upsertError) {
+          console.error('Error upserting user profile:', upsertError);
+          // Try insert instead of upsert
+          const { error: insertError } = await supabase
+            .from('users')
+            .insert(profileData);
+
+          if (insertError) {
+            console.error('Error inserting user profile:', insertError);
+          }
+        }
+      } catch (profileError) {
+        console.error('Error creating user profile:', profileError);
+      }      // Handle avatar upload if provided
+      if (avatar) {
+        console.log('Starting avatar upload process...', { 
+          fileName: avatar.name, 
+          fileSize: avatar.size, 
+          fileType: avatar.type,
+          userId: data.user.id 
+        });
+          try {
+          const fileExt = avatar.name.split('.').pop();
+          const fileName = `${data.user.id}.${fileExt}`;
+          
+          console.log('Uploading to bucket "profile-images" with filename:', fileName);
+          
+          // Try uploading without any folder structure first
+          const { data: uploadData, error: uploadError } = await supabase.storage
+            .from('profile-images')
+            .upload(fileName, avatar, { upsert: true });
+
+          console.log('Upload result:', { uploadData, uploadError });
+
+          if (uploadError) {
+            console.error('Error uploading avatar:', uploadError);
+            throw new Error(`Failed to upload avatar: ${uploadError.message}`);
+          } else {
+            console.log('Avatar uploaded successfully, getting public URL...');
+            // Get the public URL for the uploaded avatar
+            const { data: publicUrlData } = await supabase.storage
+              .from('profile-images')
+              .getPublicUrl(fileName);
+
+            console.log('Public URL data:', publicUrlData);
+
+            if (publicUrlData?.publicUrl) {
+              console.log('Updating user profile with avatar URL:', publicUrlData.publicUrl);
+              // Update the user's profile with the avatar URL
+              const { data: updateData, error: updateError } = await supabase
+                .from('users')
+                .update({ avatar_image_url: publicUrlData.publicUrl })
+                .eq('id', data.user.id);
+
+              console.log('Profile update result:', { updateData, updateError });
+
+              if (updateError) {
+                console.error(
+                  'Error updating user profile with avatar URL:',
+                  updateError
+                );
+                throw new Error(`Failed to update profile with avatar URL: ${updateError.message}`);
+              } else {
+                console.log('Avatar URL updated in user profile successfully');
+              }
+            } else {
+              console.error('No public URL returned from getPublicUrl');
+            }
+          }
+        } catch (error) {
+          console.error('Error handling avatar upload:', error);
+          // Don't throw here to avoid breaking the signup process
+          // The user is created successfully, just the avatar failed
+        }
+      } else {
+        console.log('No avatar provided for upload');
+      }
+
       return data;
     },
-    onSuccess: (data) => {
-      // Note: For signup, the profile will be created by the trigger
-      // The user will be available after email confirmation
+    onSuccess: () => {
+      // Invalidate user query to refetch the updated profile
       queryClient.invalidateQueries({ queryKey: ['user'] });
     },
   });
