@@ -81,16 +81,18 @@ export function useLikeMutation({
           throw error;
         }
       }
-    },
-    onSuccess: () => {
+    },    onSuccess: () => {
       // Invalidate the user liked status
       queryClient.invalidateQueries({
         queryKey: ['userLiked', suggestionId, user?.id],
       });
       // Invalidate the suggestions list (for home page)
       queryClient.invalidateQueries({ queryKey: ['suggestions'] });
-      // Invalidate the roadmap items
+      // Invalidate all roadmap-related queries
       queryClient.invalidateQueries({ queryKey: ['roadmap'] });
+      queryClient.invalidateQueries({ queryKey: ['roadmapColumn'] });
+      queryClient.invalidateQueries({ queryKey: ['roadmap-feedback'] });
+      queryClient.invalidateQueries({ queryKey: ['statuses'] });
       // Invalidate the individual suggestion query (for suggestion page) if slug is provided
       if (suggestionSlug) {
         queryClient.invalidateQueries({
