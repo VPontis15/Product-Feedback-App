@@ -9,6 +9,7 @@ import LoginPage from './pages/Login/LoginPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import PublicRoute from './components/PublicRoute';
 import { AuthProvider } from './context/authContext';
+import SignupPage from './pages/Signup/SignupPage';
 
 const GlobalStyle = createGlobalStyle`
 
@@ -132,6 +133,14 @@ const router = createBrowserRouter([
     element: (
       <PublicRoute>
         <LoginPage />
+      </PublicRoute>
+    ),
+  },
+  {
+    path: 'signup',
+    element: (
+      <PublicRoute>
+        <SignupPage />
       </PublicRoute>
     ),
   },
