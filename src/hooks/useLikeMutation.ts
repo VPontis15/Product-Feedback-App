@@ -81,7 +81,8 @@ export function useLikeMutation({
           throw error;
         }
       }
-    },    onSuccess: () => {
+    },
+    onSuccess: () => {
       // Invalidate the user liked status
       queryClient.invalidateQueries({
         queryKey: ['userLiked', suggestionId, user?.id],

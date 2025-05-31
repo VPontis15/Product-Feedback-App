@@ -191,24 +191,28 @@ export const useAuth = () => {
         }
       } catch (profileError) {
         console.error('Error creating user profile:', profileError);
-      }      // Handle avatar upload if provided
+      } // Handle avatar upload if provided
       if (avatar) {
-        console.log('Starting avatar upload process...', { 
-          fileName: avatar.name, 
-          fileSize: avatar.size, 
+        console.log('Starting avatar upload process...', {
+          fileName: avatar.name,
+          fileSize: avatar.size,
           fileType: avatar.type,
-          userId: data.user.id 
+          userId: data.user.id,
         });
-          try {
+        try {
           const fileExt = avatar.name.split('.').pop();
           const fileName = `${data.user.id}.${fileExt}`;
-          
-          console.log('Uploading to bucket "profile-images" with filename:', fileName);
-          
+
+          console.log(
+            'Uploading to bucket "profile-images" with filename:',
+            fileName
+          );
+
           // Try uploading without any folder structure first
-          const { data: uploadData, error: uploadError } = await supabase.storage
-            .from('profile-images')
-            .upload(fileName, avatar, { upsert: true });
+          const { data: uploadData, error: uploadError } =
+            await supabase.storage
+              .from('profile-images')
+              .upload(fileName, avatar, { upsert: true });
 
           console.log('Upload result:', { uploadData, uploadError });
 
@@ -225,21 +229,29 @@ export const useAuth = () => {
             console.log('Public URL data:', publicUrlData);
 
             if (publicUrlData?.publicUrl) {
-              console.log('Updating user profile with avatar URL:', publicUrlData.publicUrl);
+              console.log(
+                'Updating user profile with avatar URL:',
+                publicUrlData.publicUrl
+              );
               // Update the user's profile with the avatar URL
               const { data: updateData, error: updateError } = await supabase
                 .from('users')
                 .update({ avatar_image_url: publicUrlData.publicUrl })
                 .eq('id', data.user.id);
 
-              console.log('Profile update result:', { updateData, updateError });
+              console.log('Profile update result:', {
+                updateData,
+                updateError,
+              });
 
               if (updateError) {
                 console.error(
                   'Error updating user profile with avatar URL:',
                   updateError
                 );
-                throw new Error(`Failed to update profile with avatar URL: ${updateError.message}`);
+                throw new Error(
+                  `Failed to update profile with avatar URL: ${updateError.message}`
+                );
               } else {
                 console.log('Avatar URL updated in user profile successfully');
               }

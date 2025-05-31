@@ -232,7 +232,8 @@ export default function LoginForm() {
     password: '',
   });
   const from = location.state?.from?.pathname || '/';
-  const userPassword = import.meta.env.VITE_TEST_USER_PASSWORD || 'defaultpassword';
+  const userPassword =
+    import.meta.env.VITE_TEST_USER_PASSWORD || 'defaultpassword';
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -265,10 +266,13 @@ export default function LoginForm() {
       await login({
         email: formData.email,
         password: formData.password,
-      });      // Navigate after successful login
+      }); // Navigate after successful login
       navigate(from, { replace: true });
     } catch (err: unknown) {
-      const errorMessage = err instanceof Error ? err.message : 'Login failed. Please check your credentials and try again.';
+      const errorMessage =
+        err instanceof Error
+          ? err.message
+          : 'Login failed. Please check your credentials and try again.';
       setError(errorMessage);
     }
   };
@@ -277,10 +281,12 @@ export default function LoginForm() {
     try {
       await login({
         email: 'testuser@gmail.com',
-        password: userPassword,      });
+        password: userPassword,
+      });
       navigate(from, { replace: true });
     } catch (err: unknown) {
-      const errorMessage = err instanceof Error ? err.message : 'Demo login failed.';
+      const errorMessage =
+        err instanceof Error ? err.message : 'Demo login failed.';
       setError(errorMessage);
     }
   };
