@@ -3,7 +3,7 @@ import FormInput from '../../NewSuggestion/components/FormInput';
 import Button from '../../../components/Button';
 import { useState } from 'react';
 import { motion } from 'motion/react';
-import { useAuthContext } from '../../../context/authContext';
+import { useAuthContext } from '../../../context/authUtils';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 const FormContainer = styled.div`
@@ -231,9 +231,8 @@ export default function LoginForm() {
     email: '',
     password: '',
   });
-
   const from = location.state?.from?.pathname || '/';
-  const userPassword = import.meta.env.VITE_TEST_USER_PASSWORD;
+  const userPassword = import.meta.env.VITE_TEST_USER_PASSWORD || 'defaultpassword';
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -266,14 +265,11 @@ export default function LoginForm() {
       await login({
         email: formData.email,
         password: formData.password,
-      });
-      // Navigate after successful login
+      });      // Navigate after successful login
       navigate(from, { replace: true });
-    } catch (err: any) {
-      setError(
-        err.message ||
-          'Login failed. Please check your credentials and try again.'
-      );
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Login failed. Please check your credentials and try again.';
+      setError(errorMessage);
     }
   };
 
@@ -281,11 +277,11 @@ export default function LoginForm() {
     try {
       await login({
         email: 'testuser@gmail.com',
-        password: userPassword,
-      });
+        password: userPassword,      });
       navigate(from, { replace: true });
-    } catch (err: any) {
-      setError(err.message || 'Demo login failed.');
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Demo login failed.';
+      setError(errorMessage);
     }
   };
 
