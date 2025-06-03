@@ -57,6 +57,7 @@ const CommentDetailsWrapper = styled.div`
 
   h3 {
     color: var(--color-dark-blue);
+    text-transform: capitalize;
   }
 
   span {

@@ -32,6 +32,7 @@ const Avatar = styled.img`
 const Name = styled.h3`
   color: var(--color-dark-blue);
   font-size: var(--fs-xs);
+  text-transform: capitalize;
 `;
 const Username = styled.p`
   color: var(--color-dark-gray);

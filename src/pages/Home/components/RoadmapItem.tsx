@@ -23,7 +23,6 @@ const StyledRoadmapItem = styled.div`
     color: var(--color-dark-gray);
     text-transform: capitalize;
     font-size: var(--fs-base);
-    font-weight: 300;
   }
 
   span {
