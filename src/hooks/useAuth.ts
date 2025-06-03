@@ -127,7 +127,8 @@ export const useAuth = () => {
       lastName,
       username,
       avatar,
-    }: SignUpData) => {      // Check if username is taken first
+    }: SignUpData) => {
+      // Check if username is taken first
       if (username) {
         const { data: existingUsers, error: checkError } = await supabase
           .from('users')
@@ -194,14 +195,15 @@ export const useAuth = () => {
           }
         }
       } catch (profileError) {
-        console.error('Error creating user profile:', profileError);      } // Handle avatar upload if provided
+        console.error('Error creating user profile:', profileError);
+      } // Handle avatar upload if provided
       if (avatar) {
         console.log('Starting avatar upload process...');
         try {
           const avatarUrl = await uploadProfileImage({
             userId: data.user.id,
             file: avatar,
-          });          // Update the user's profile with the avatar URL
+          }); // Update the user's profile with the avatar URL
           const { error: updateError } = await supabase
             .from('users')
             .update({ avatar_image_url: avatarUrl })
